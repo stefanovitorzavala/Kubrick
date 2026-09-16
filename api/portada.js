@@ -13,7 +13,6 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Toma el archivo guardado más reciente
       const blobMasReciente = blobs.sort(
         (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
       )[0];
@@ -21,22 +20,21 @@ module.exports = async (req, res) => {
       const respuesta = await fetch(blobMasReciente.url, { cache: "no-store" });
 
       if (!respuesta.ok) {
-        // Devuelve 500 en error para que el cliente NO interprete que la portada está vacía
-        res.status(500).json({ error: "No se pudo descargar el archivo de portada." });
+        res.status(500).json({ error: "No se pudo leer la portada guardada." });
         return;
       }
 
       const datos = await respuesta.json();
       res.status(200).json(datos);
     } catch (e) {
-      res.status(500).json({ error: "Error en servidor al leer portada: " + e.message });
+      res.status(500).json({ error: "Error al leer portada: " + e.message });
     }
     return;
   }
 
   if (req.method === "POST") {
     if (!process.env.ADMIN_PASSWORD) {
-      res.status(500).json({ error: "Falta la variable ADMIN_PASSWORD en Vercel." });
+      res.status(500).json({ error: "Falta ADMIN_PASSWORD." });
       return;
     }
 
@@ -52,15 +50,27 @@ module.exports = async (req, res) => {
     }
 
     try {
-      await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
+      // Garantiza que si req.body ya viene como objeto o string se parsee correctamente
+      let cuerpo = req.body;
+      if (typeof cuerpo === "string") {
+        try { cuerpo = JSON.parse(cuerpo); } catch (e) {}
+      }
+
+      if (!cuerpo || (typeof cuerpo === "object" && Object.keys(cuerpo).length === 0)) {
+        res.status(400).json({ error: "El contenido a guardar está vacío." });
+        return;
+      }
+
+      await put(NOMBRE_ARCHIVO, JSON.stringify(cuerpo), {
         access: "public",
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: "application/json"
       });
+
       res.status(200).json({ ok: true });
     } catch (e) {
-      res.status(500).json({ error: "Error al guardar en Vercel Blob: " + e.message });
+      res.status(500).json({ error: "Error al guardar: " + e.message });
     }
     return;
   }
