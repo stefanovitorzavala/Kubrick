@@ -12,8 +12,12 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Se usa downloadUrl en lugar de url para autorizar la lectura del archivo privado
-      const urlLectura = blobs[0].downloadUrl || blobs[0].url;
+      // Ordena los archivos por fecha de modificación y selecciona el más reciente
+      const blobMasReciente = blobs.sort(
+        (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
+      )[0];
+
+      const urlLectura = blobMasReciente.downloadUrl || blobMasReciente.url;
       const respuesta = await fetch(urlLectura, { cache: "no-store" });
 
       if (!respuesta.ok) {
