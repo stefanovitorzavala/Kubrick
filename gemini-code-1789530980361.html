@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kubrick · Análisis mediático comparado</title>
+<meta name="description" content="Herramienta que compara cómo distintos medios cubren un mismo hecho, basada en la teoría de la construcción social de la realidad.">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Cliente CDN de Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ===========================================================
+   ESTILOS
+   =========================================================== */
+
+:root {
+  --papel: #FFFFFF;
+  --papel-2: #F5F5F7;
+  --papel-3: #FAFAFC;
+  --tinta: #1D1D1F;
+  --gris: #424245;
+  --gris-medio: #6E6E73;
+  --gris-claro: #86868B;
+  --linea: #D2D2D7;
+  --linea-suave: #E8E8ED;
+  --acento: #0071E3;
+  --acento-oscuro: #0058B9;
+  --acento-suave: #E8F1FD;
+
+  --valorativa: #9A6300;
+  --emotiva: #B0304A;
+  --atenuante: #2F6B45;
+  --atribucion-vaga: #4C5A7A;
+
+  --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+        "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "New York", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+
+  --r-s: 10px;
+  --r-m: 16px;
+  --r-l: 22px;
+  --r-pill: 980px;
+
+  --sombra-1: 0 1px 2px rgba(0,0,0,.04), 0 4px 14px rgba(0,0,0,.05);
+  --sombra-2: 0 2px 6px rgba(0,0,0,.06), 0 14px 36px rgba(0,0,0,.09);
+
+  --curva: cubic-bezier(.4, .0, .2, 1);
+  --resorte: cubic-bezier(.32, 1.28, .5, 1);
+
+  --ancho: 1220px;
+  --prosa: 64ch;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--gris);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -.005em;
+}
+
+h1, h2, h3, h4 {
+  color: var(--tinta);
+  line-height: 1.1;
+  margin: 0 0 .5em;
+  letter-spacing: -.022em;
+  font-weight: 600;
+}
+
+h1 { font-size: clamp(2rem, 3.4vw, 2.9rem); }
+h2 { font-size: clamp(1.4rem, 2.2vw, 1.85rem); }
+h3 { font-size: 1.12rem; }
+h4 { font-size: .95rem; }
+
+p { margin: 0 0 1em; max-width: var(--prosa); }
+
+a { color: var(--acento); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.oculto { display: none !important; }
+
+.contenedor {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* -------------------- BARRA SUPERIOR -------------------- */
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(255,255,255,.78);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  backdrop-filter: saturate(180%) blur(22px);
+  border-bottom: 1px solid rgba(0,0,0,.07);
+}
+
+.barra .contenedor {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  min-height: 56px;
+  flex-wrap: wrap;
+}
+
+.marca {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--tinta);
+  font-weight: 600;
+  margin-right: auto;
+  letter-spacing: -.01em;
+}
+
+.barra nav { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.barra nav a {
+  color: var(--gris);
+  font-size: .85rem;
+  padding: 7px 13px;
+  border-radius: var(--r-pill);
+  transition: background .22s var(--curva), color .22s var(--curva);
+}
+
+.barra nav a:hover { background: var(--papel-2); color: var(--tinta); text-decoration: none; }
+.barra nav a.activo { background: var(--tinta); color: #fff; }
+
+.seccion { padding: 40px 0 96px; }
+
+/* -------------------- PORTADA & REJILLA -------------------- */
+
+.rejilla-portada {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.bloque-seccion {
+  grid-column: span 12;
+  margin-bottom: 24px;
+}
+
+.cabecera-seccion-noticias {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--tinta);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.seccion-noticias {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.tarjeta-mediana {
+  display: flex;
+  gap: 14px;
+  background: var(--papel-2);
+  border-radius: var(--r-m);
+  padding: 16px;
+  transition: transform .3s var(--resorte);
+}
+.tarjeta-mediana:hover { transform: translateY(-2px); }
+
+.estado-conexion {
+  font-size: .78rem;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--papel-2);
+  color: var(--gris-medio);
+}
+
+.opcion-titular {
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  text-align: left;
+  background: var(--papel);
+  border: 2px solid transparent;
+  border-radius: var(--r-s);
+  padding: 16px 19px;
+  cursor: pointer;
+  color: var(--tinta);
+  line-height: 1.28;
+  transition: border-color .25s var(--curva), transform .35s var(--resorte);
+}
+.opcion-titular:hover { border-color: var(--acento); }
+
+.boton {
+  font-family: var(--ui);
+  font-size: .92rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: none;
+  background: var(--acento);
+  color: #fff;
+  cursor: pointer;
+  border-radius: var(--r-pill);
+  transition: background .22s var(--curva);
+}
+.boton:hover { background: var(--acento-oscuro); }
+</style>
+</head>
+
+<body>
+
+<header class="barra">
+  <div class="contenedor">
+    <a href="#" class="marca">Kubrick</a>
+    <nav>
+      <a href="#" class="activo">Portada</a>
+      <a href="#">Casos</a>
+      <a href="#">Medios</a>
+    </nav>
+    <span id="estado-conexion" class="estado-conexion">Conectando a Supabase...</span>
+  </div>
+</header>
+
+<main class="contenedor seccion">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h1>Portada Principal</h1>
+    <button id="btn-guardar" class="boton">Guardar Configuración</button>
+  </div>
+
+  <div id="rejilla-portada" class="rejilla-portada">
+    <!-- El contenido cargará dinámicamente desde Supabase -->
+  </div>
+</main>
+
+<script>
+// 1. Inicialización de cliente Supabase con credenciales
+const SUPABASE_URL = 'https://qpbosmlgcyycoiuhcetl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwYm9zbWxnY3l5Y29pdWhjZXRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1MTA4NTgsImV4cCI6MjEwNTA4Njg1OH0.fQeCtpNLjJiGAcuKkyVQ8R3TwKSCdYS2uFh1GsBlxaA';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Configuración por defecto si la base de datos está vacía
+let estadoGlobal = {
+  secciones: [
+    {
+      id: "sec-1",
+      titulo: "Política y Sociedad",
+      columnas: 12,
+      noticias: [
+        { id: "n-1", titular: "Cobertura comparada de medios nacionales", medio: "Análisis Kubrick" }
+      ]
+    }
+  ]
+};
+
+const elEstadoConexion = document.getElementById('estado-conexion');
+const elRejilla = document.getElementById('rejilla-portada');
+const elBtnGuardar = document.getElementById('btn-guardar');
+
+// 2. Cargar datos desde la tabla noticias_secciones
+async function cargarConfiguracion() {
+  try {
+    elEstadoConexion.textContent = "Cargando...";
+    
+    const { data, error } = await supabaseClient
+      .from('noticias_secciones')
+      .select('configuracion_global')
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data && data.configuracion_global) {
+      estadoGlobal = data.configuracion_global;
+      elEstadoConexion.textContent = "Sincronizado con Supabase";
+      elEstadoConexion.style.background = "#E6F4EA";
+      elEstadoConexion.style.color = "#137333";
+    } else {
+      elEstadoConexion.textContent = "Sin datos guardados (Usando plantilla)";
+    }
+    
+    renderizarPortada();
+  } catch (err) {
+    console.error("Error al cargar de Supabase:", err);
+    elEstadoConexion.textContent = "Error al conectar con Supabase";
+    elEstadoConexion.style.background = "#FCE8E6";
+    elEstadoConexion.style.color = "#C5221F";
+    renderizarPortada();
+  }
+}
+
+// 3. Guardar configuración global en formato jsonb
+async function guardarConfiguracion() {
+  try {
+    elEstadoConexion.textContent = "Guardando...";
+    elBtnGuardar.disabled = true;
+
+    // Actualiza o inserta el registro id: 1
+    const { error } = await supabaseClient
+      .from('noticias_secciones')
+      .upsert({
+        id: 1,
+        configuracion_global: estadoGlobal,
+        actualizado_en: new Date().toISOString()
+      });
+
+    if (error) throw error;
+
+    elEstadoConexion.textContent = "Guardado con éxito";
+    elEstadoConexion.style.background = "#E6F4EA";
+    elEstadoConexion.style.color = "#137333";
+  } catch (err) {
+    console.error("Error al guardar en Supabase:", err);
+    alert("No se pudo guardar la configuración en Supabase. Revisa la consola.");
+    elEstadoConexion.textContent = "Error al guardar";
+  } finally {
+    elBtnGuardar.disabled = false;
+  }
+}
+
+// 4. Renderizado dinámico del DOM
+function renderizarPortada() {
+  elRejilla.innerHTML = '';
+  
+  if (!estadoGlobal.secciones || estadoGlobal.secciones.length === 0) {
+    elRejilla.innerHTML = '<p>No hay secciones configuradas.</p>';
+    return;
+  }
+
+  estadoGlobal.secciones.forEach(sec => {
+    const bloque = document.createElement('article');
+    bloque.className = 'bloque-seccion';
+    bloque.style.gridColumn = `span ${sec.columnas || 12}`;
+
+    let noticiasHtml = '';
+    (sec.noticias || []).forEach(noticia => {
+      noticiasHtml += `
+        <div class="tarjeta-mediana">
+          <div>
+            <h3>${noticia.titular}</h3>
+            <p>${noticia.medio}</p>
+          </div>
+        </div>
+      `;
+    });
+
+    bloque.innerHTML = `
+      <div class="cabecera-seccion-noticias">
+        <h2>${sec.titulo}</h2>
+      </div>
+      <div class="seccion-noticias">
+        ${noticiasHtml}
+      </div>
+    `;
+
+    elRejilla.appendChild(bloque);
+  });
+}
+
+// Event Listeners e inicio
+elBtnGuardar.addEventListener('click', guardarConfiguracion);
+document.addEventListener('DOMContentLoaded', cargarConfiguracion);
+</script>
+</body>
+</html>
