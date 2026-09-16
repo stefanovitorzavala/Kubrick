@@ -12,7 +12,6 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Al ser un Blob PRIVADO, enviamos el token de autenticación para leer el archivo
       const respuesta = await fetch(blobs[0].url, {
         headers: {
           Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
@@ -51,10 +50,10 @@ module.exports = async (req, res) => {
     }
 
     try {
-      // Guardamos con access: "private" para coincidir con tu almacén privado de Vercel
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
         access: "private",
         addRandomSuffix: false,
+        allowOverwrite: true,
         contentType: "application/json"
       });
       res.status(200).json({ ok: true });
