@@ -12,13 +12,13 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Ordena los archivos por fecha de modificación y selecciona el más reciente
+      // Toma el archivo guardado más reciente
       const blobMasReciente = blobs.sort(
         (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
       )[0];
 
-      const urlLectura = blobMasReciente.downloadUrl || blobMasReciente.url;
-      const respuesta = await fetch(urlLectura, { cache: "no-store" });
+      // Lectura pública directa sin restricción de permisos
+      const respuesta = await fetch(blobMasReciente.url, { cache: "no-store" });
 
       if (!respuesta.ok) {
         res.status(200).json(ESTADO_VACIO);
@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
 
     try {
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
-        access: "private",
+        access: "public",
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: "application/json"
