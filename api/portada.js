@@ -7,6 +7,7 @@ module.exports = async (req, res) => {
   if (req.method === "GET") {
     try {
       const { blobs } = await list({ prefix: NOMBRE_ARCHIVO });
+
       if (!blobs || blobs.length === 0) {
         res.status(200).json(ESTADO_VACIO);
         return;
@@ -17,25 +18,25 @@ module.exports = async (req, res) => {
         (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
       )[0];
 
-      // Lectura pública directa sin restricción de permisos
       const respuesta = await fetch(blobMasReciente.url, { cache: "no-store" });
 
       if (!respuesta.ok) {
-        res.status(200).json(ESTADO_VACIO);
+        // Devuelve 500 en error para que el cliente NO interprete que la portada está vacía
+        res.status(500).json({ error: "No se pudo descargar el archivo de portada." });
         return;
       }
 
       const datos = await respuesta.json();
       res.status(200).json(datos);
     } catch (e) {
-      res.status(500).json({ error: "No se pudo leer la portada: " + e.message });
+      res.status(500).json({ error: "Error en servidor al leer portada: " + e.message });
     }
     return;
   }
 
   if (req.method === "POST") {
     if (!process.env.ADMIN_PASSWORD) {
-      res.status(500).json({ error: "Falta la variable ADMIN_PASSWORD." });
+      res.status(500).json({ error: "Falta la variable ADMIN_PASSWORD en Vercel." });
       return;
     }
 
@@ -59,7 +60,7 @@ module.exports = async (req, res) => {
       });
       res.status(200).json({ ok: true });
     } catch (e) {
-      res.status(500).json({ error: "No se pudo guardar la portada: " + e.message });
+      res.status(500).json({ error: "Error al guardar en Vercel Blob: " + e.message });
     }
     return;
   }
