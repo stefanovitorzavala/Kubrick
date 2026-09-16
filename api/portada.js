@@ -1,15 +1,16 @@
 /* ===========================================================
    /api/portada
-   Guarda y devuelve el estado compartido de la portada de Kubrick
-   (secciones, ediciones de noticias, ocultamientos) en un único
+   Guarda y devuelve el estado compartido de Kubrick: las secciones
+   de la portada, las noticias completas que se suben como .json
+   (título, coberturas, marcas, todo), los medios nuevos que traen
+   esas noticias, las ediciones y los ocultamientos. Todo en un único
    archivo dentro de Vercel Blob, para que lo vea cualquier visitante
-   del sitio, no solo quien lo armó.
+   del sitio sin que nadie más que el admin tenga que subir nada.
 
-   El store de Blob es PRIVADO (no público): nadie puede leer el
-   archivo entrando directo a su URL, solo esta función, que está
-   autenticada automáticamente por Vercel (OIDC) al estar el store
-   conectado al proyecto. Por eso se usa access: "private" en vez de
-   "public" en todas las operaciones.
+   El store de Blob es PÚBLICO: cualquiera con el link exacto del
+   archivo podría leerlo (no hay nada sensible ahí, son noticias
+   públicas y su organización), pero solo esta función, con la clave
+   correcta, puede escribirlo.
 
    GET  -> devuelve el estado actual (o uno vacío si todavía no existe).
    POST -> guarda un estado nuevo. Requiere la cabecera x-clave-admin
@@ -23,34 +24,22 @@
            botón "Admin" del sitio antes de activar el modo admin).
    =========================================================== */
 
-const { put, get } = require("@vercel/blob");
+const { put, head } = require("@vercel/blob");
 
 const NOMBRE_ARCHIVO = "portada.json";
-const ESTADO_VACIO = { secciones: [], overrides: {}, ocultos: [], lineasSeccion: "si" };
-
-/* Los blobs privados se leen como un stream (por partes), no como un
-   archivo entero de una vez. Esto lo junta todo en un solo texto. */
-async function streamATexto(stream) {
-  const lector = stream.getReader();
-  const partes = [];
-  while (true) {
-    const { done, value } = await lector.read();
-    if (done) break;
-    partes.push(value);
-  }
-  return Buffer.concat(partes).toString("utf-8");
-}
+const ESTADO_VACIO = { secciones: [], overrides: {}, ocultos: [], lineasSeccion: "si", noticias: [], medios: {} };
 
 module.exports = async (req, res) => {
   if (req.method === "GET") {
     try {
-      const resultado = await get(NOMBRE_ARCHIVO, { access: "private", useCache: false });
-      if (!resultado || resultado.statusCode !== 200 || !resultado.stream) {
+      const info = await head(NOMBRE_ARCHIVO).catch(function () { return null; });
+      if (!info) {
         res.status(200).json(ESTADO_VACIO);
         return;
       }
-      const texto = await streamATexto(resultado.stream);
-      res.status(200).json(JSON.parse(texto));
+      const respuesta = await fetch(info.url, { cache: "no-store" });
+      const datos = await respuesta.json();
+      res.status(200).json(Object.assign({}, ESTADO_VACIO, datos));
     } catch (e) {
       res.status(200).json(ESTADO_VACIO);
     }
@@ -76,7 +65,7 @@ module.exports = async (req, res) => {
 
     try {
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
-        access: "private",
+        access: "public",
         allowOverwrite: true,
         contentType: "application/json"
       });
