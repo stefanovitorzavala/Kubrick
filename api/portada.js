@@ -12,12 +12,9 @@ module.exports = async (req, res) => {
         return;
       }
 
-      const respuesta = await fetch(blobs[0].url, {
-        headers: {
-          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
-        },
-        cache: "no-store"
-      });
+      // Utilizamos downloadUrl para evitar bloqueos de lectura
+      const urlDeLectura = blobs[0].downloadUrl || blobs[0].url;
+      const respuesta = await fetch(urlDeLectura, { cache: "no-store" });
 
       if (!respuesta.ok) {
         res.status(200).json(ESTADO_VACIO);
@@ -34,7 +31,7 @@ module.exports = async (req, res) => {
 
   if (req.method === "POST") {
     if (!process.env.ADMIN_PASSWORD) {
-      res.status(500).json({ error: "El servidor no tiene configurada la variable de entorno ADMIN_PASSWORD." });
+      res.status(500).json({ error: "El servidor no tiene configurada la variable ADMIN_PASSWORD." });
       return;
     }
 
@@ -51,9 +48,9 @@ module.exports = async (req, res) => {
 
     try {
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
-        access: "private",
+        access: "public",
         addRandomSuffix: false,
-        allowOverwrite: true,
+        allowOverwrite: true, // Permite guardar los cambios
         contentType: "application/json"
       });
       res.status(200).json({ ok: true });
