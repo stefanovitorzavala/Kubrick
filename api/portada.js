@@ -12,16 +12,11 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Se consulta la URL exacta sin modificar el enlace privado
-      const respuesta = await fetch(blobs[0].url, {
-        headers: {
-          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
-        },
-        cache: "no-store"
-      });
+      // Se usa downloadUrl en lugar de url para autorizar la lectura del archivo privado
+      const urlLectura = blobs[0].downloadUrl || blobs[0].url;
+      const respuesta = await fetch(urlLectura, { cache: "no-store" });
 
       if (!respuesta.ok) {
-        console.error("Error Blob HTTP:", respuesta.status);
         res.status(200).json(ESTADO_VACIO);
         return;
       }
@@ -29,7 +24,6 @@ module.exports = async (req, res) => {
       const datos = await respuesta.json();
       res.status(200).json(datos);
     } catch (e) {
-      console.error("Error en GET:", e);
       res.status(500).json({ error: "No se pudo leer la portada: " + e.message });
     }
     return;
@@ -61,7 +55,6 @@ module.exports = async (req, res) => {
       });
       res.status(200).json({ ok: true });
     } catch (e) {
-      console.error("Error en POST:", e);
       res.status(500).json({ error: "No se pudo guardar la portada: " + e.message });
     }
     return;
