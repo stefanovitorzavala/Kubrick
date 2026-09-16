@@ -12,10 +12,8 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Se agrega un parámetro único (?t=...) para romper la caché de Vercel CDN y leer el archivo real
-      const urlSinCache = `${blobs[0].url}?t=${Date.now()}`;
-
-      const respuesta = await fetch(urlSinCache, {
+      // Se consulta la URL exacta sin modificar el enlace privado
+      const respuesta = await fetch(blobs[0].url, {
         headers: {
           Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
         },
@@ -23,19 +21,15 @@ module.exports = async (req, res) => {
       });
 
       if (!respuesta.ok) {
-        if (respuesta.status === 404) {
-          res.status(200).json(ESTADO_VACIO);
-          return;
-        }
-        res.status(respuesta.status).json({
-          error: `Error al leer de Vercel Blob (Código HTTP ${respuesta.status})`
-        });
+        console.error("Error Blob HTTP:", respuesta.status);
+        res.status(200).json(ESTADO_VACIO);
         return;
       }
 
       const datos = await respuesta.json();
       res.status(200).json(datos);
     } catch (e) {
+      console.error("Error en GET:", e);
       res.status(500).json({ error: "No se pudo leer la portada: " + e.message });
     }
     return;
@@ -43,7 +37,7 @@ module.exports = async (req, res) => {
 
   if (req.method === "POST") {
     if (!process.env.ADMIN_PASSWORD) {
-      res.status(500).json({ error: "El servidor no tiene configurada la variable ADMIN_PASSWORD." });
+      res.status(500).json({ error: "Falta la variable ADMIN_PASSWORD." });
       return;
     }
 
@@ -67,6 +61,7 @@ module.exports = async (req, res) => {
       });
       res.status(200).json({ ok: true });
     } catch (e) {
+      console.error("Error en POST:", e);
       res.status(500).json({ error: "No se pudo guardar la portada: " + e.message });
     }
     return;
