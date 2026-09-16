@@ -11,7 +11,20 @@ module.exports = async (req, res) => {
         res.status(200).json(ESTADO_VACIO);
         return;
       }
-      const respuesta = await fetch(blobs[0].url, { cache: "no-store" });
+
+      // Al ser un Blob PRIVADO, enviamos el token de autenticación para leer el archivo
+      const respuesta = await fetch(blobs[0].url, {
+        headers: {
+          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+        },
+        cache: "no-store"
+      });
+
+      if (!respuesta.ok) {
+        res.status(200).json(ESTADO_VACIO);
+        return;
+      }
+
       const datos = await respuesta.json();
       res.status(200).json(datos);
     } catch (e) {
@@ -38,8 +51,9 @@ module.exports = async (req, res) => {
     }
 
     try {
+      // Guardamos con access: "private" para coincidir con tu almacén privado de Vercel
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
-        access: "public",
+        access: "private",
         addRandomSuffix: false,
         contentType: "application/json"
       });
