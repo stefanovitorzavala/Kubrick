@@ -1735,6 +1735,7 @@ code {
 .chip-filtro.activo .chip-n { opacity: .85; }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -5351,5 +5352,58 @@ window.addEventListener("hashchange", enrutar);
 enrutar();
 
 </script>
+// ==========================================
+// CONEXIÓN Y SINCRONIZACIÓN CON SUPABASE
+// ==========================================
+const SUPABASE_URL = 'https://qpbosmlgcyycoiuhcetl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwYm9zbWxnY3l5Y29pdWhjZXRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1MTA4NTgsImV4cCI6MjEwNTA4Njg1OH0.fQeCtpNLjJiGAcuKkyVQ8R3TwKSCdYS2uFh1GsBlxaA';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Carga la configuración al abrir la página
+async function cargarConfiguracionSupabase() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('noticias_secciones')
+      .select('configuracion_global')
+      .eq('id', 1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data && data.configuracion_global) {
+      // Sustituye "estado" por el nombre de la variable global de tu script
+      estado = data.configuracion_global; 
+      
+      // Llama a la función original de tu script que dibuja la portada
+      if (typeof renderizarPortada === 'function') {
+        renderizarPortada();
+      }
+    }
+  } catch (err) {
+    console.error("Error al cargar datos desde Supabase:", err);
+  }
+}
+
+// Guarda la configuración actual en la base de datos
+async function guardarConfiguracionSupabase(objetoEstado) {
+  try {
+    const { error } = await supabaseClient
+      .from('noticias_secciones')
+      .upsert({
+        id: 1,
+        configuracion_global: objetoEstado,
+        actualizado_en: new Date().toISOString()
+      });
+
+    if (error) throw error;
+    console.log("Configuración guardada exitosamente en Supabase.");
+  } catch (err) {
+    console.error("Error al guardar en Supabase:", err);
+  }
+}
+
+// Ejecuta la carga automática al iniciar
+document.addEventListener('DOMContentLoaded', cargarConfiguracionSupabase);
 </body>
 </html>
