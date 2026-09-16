@@ -12,8 +12,10 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Lectura autorizada usando el token del almacén privado
-      const respuesta = await fetch(blobs[0].url, {
+      // Se agrega un parámetro único (?t=...) para romper la caché de Vercel CDN y leer el archivo real
+      const urlSinCache = `${blobs[0].url}?t=${Date.now()}`;
+
+      const respuesta = await fetch(urlSinCache, {
         headers: {
           Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
         },
@@ -21,7 +23,13 @@ module.exports = async (req, res) => {
       });
 
       if (!respuesta.ok) {
-        res.status(200).json(ESTADO_VACIO);
+        if (respuesta.status === 404) {
+          res.status(200).json(ESTADO_VACIO);
+          return;
+        }
+        res.status(respuesta.status).json({
+          error: `Error al leer de Vercel Blob (Código HTTP ${respuesta.status})`
+        });
         return;
       }
 
@@ -51,7 +59,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-      // Configuración adaptada a tu almacén privado en Vercel
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
         access: "private",
         addRandomSuffix: false,
