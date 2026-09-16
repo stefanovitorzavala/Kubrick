@@ -12,9 +12,13 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // Utilizamos downloadUrl para evitar bloqueos de lectura
-      const urlDeLectura = blobs[0].downloadUrl || blobs[0].url;
-      const respuesta = await fetch(urlDeLectura, { cache: "no-store" });
+      // Lectura autorizada usando el token del almacén privado
+      const respuesta = await fetch(blobs[0].url, {
+        headers: {
+          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+        },
+        cache: "no-store"
+      });
 
       if (!respuesta.ok) {
         res.status(200).json(ESTADO_VACIO);
@@ -47,10 +51,11 @@ module.exports = async (req, res) => {
     }
 
     try {
+      // Configuración adaptada a tu almacén privado en Vercel
       await put(NOMBRE_ARCHIVO, JSON.stringify(req.body || ESTADO_VACIO), {
-        access: "public",
+        access: "private",
         addRandomSuffix: false,
-        allowOverwrite: true, // Permite guardar los cambios
+        allowOverwrite: true,
         contentType: "application/json"
       });
       res.status(200).json({ ok: true });
