@@ -50,7 +50,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-      // Garantiza que si req.body ya viene como objeto o string se parsee correctamente
       let cuerpo = req.body;
       if (typeof cuerpo === "string") {
         try { cuerpo = JSON.parse(cuerpo); } catch (e) {}
