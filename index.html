@@ -103,72 +103,7 @@ a:hover { text-decoration: underline; }
 
 /* -------------------- BARRA SUPERIOR -------------------- */
 
-/* -------------------- PANTALLA DE INTRODUCCIÓN -------------------- */
 
-.intro-inicio {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 40px;
-  background: radial-gradient(circle at 30% 20%, #1F3A8A 0%, #0B1120 60%);
-  color: #fff;
-  position: relative;
-}
-.intro-inicio.oculta { display: none; }
-
-.intro-contenido { max-width: 640px; }
-
-.intro-marca {
-  font-family: var(--serif);
-  font-size: clamp(4.5rem, 14vw, 8rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -.03em;
-  margin: 0 0 6px;
-}
-
-.intro-nombre {
-  font-family: var(--ui);
-  font-size: clamp(1rem, 2.4vw, 1.3rem);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.75);
-  margin: 0 0 36px;
-}
-
-.intro-texto {
-  font-family: var(--ui);
-  font-size: clamp(1.05rem, 2vw, 1.3rem);
-  line-height: 1.55;
-  color: rgba(255,255,255,.92);
-  margin: 0;
-}
-
-.intro-baja {
-  position: absolute;
-  bottom: 34px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.intro-baja span {
-  display: block;
-  width: 22px; height: 22px;
-  border-right: 2px solid rgba(255,255,255,.6);
-  border-bottom: 2px solid rgba(255,255,255,.6);
-  transform: rotate(45deg);
-  animation: intro-rebote 1.8s ease-in-out infinite;
-}
-@keyframes intro-rebote {
-  0%, 100% { transform: rotate(45deg) translate(0, 0); }
-  50% { transform: rotate(45deg) translate(6px, 6px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .intro-baja span { animation: none; }
-}
 
 .barra {
   position: sticky;
@@ -1892,17 +1827,6 @@ code {
 </head>
 <body>
 
-<div id="intro-inicio" class="intro-inicio">
-  <div class="intro-contenido">
-    <p class="intro-marca">KN</p>
-    <p class="intro-nombre">Kubrick News</p>
-    <p class="intro-texto">Comparamos cómo distintos medios cuentan la misma noticia. Marcamos las palabras que cambian el significado, señalamos qué información falta en cada versión y mostramos la posición de cada medio con datos, no con opiniones.</p>
-  </div>
-  <div class="intro-baja" aria-hidden="true">
-    <span></span>
-  </div>
-</div>
-
 <header class="barra">
   <div class="contenedor">
     <a href="#/inicio" class="marca"><span class="marca-nombre">Kubrick</span><span class="marca-sub">análisis mediático</span></a>
@@ -3036,28 +2960,144 @@ const OMISION = [
    ----------------------------------------------------------- */
 
 const DICCIONARIO = {
+  /* Atribuye intención o carácter, o juzga en lugar de describir. */
   "valorativa": [
-    "vandalos", "vandalico", "horda", "turba", "patriotas", "heroico",
-    "radicales", "extremistas", "agitadores", "revoltosos", "infiltrados",
-    "caviar", "terruqueo", "terrorista", "subversivo", "golpista",
-    "populista", "demagogo", "corrupto", "delincuente", "salvaje"
+    "vandalo*", "vandalic*", "vandalismo", "horda*", "turba*", "patriota*", "heroic*", "heroe*", "heroina",
+    "radical", "radicales", "radicalizad*", "extremista*", "agitador*", "revoltos*", "infiltrad*", "azuzador*",
+    "caviar*", "terruc*", "terruqueo", "terrorista*", "subversiv*", "golpista*", "populista*", "demagog*",
+    "corrupt*", "delincuente*", "salvaje*", "criminal*", "mafia*", "mafios*", "matonaje", "maton*", "sicario*",
+    "chavista*", "fujimorista*", "comunista*", "facho*", "fascista*", "zurdo*", "progre*", "woke",
+    "ultraderecha", "ultraizquierda", "extrema derecha", "extrema izquierda",
+    "regimen", "dictadura", "dictador*", "tirano*", "autocrata*", "autoritari*", "caudillo*", "satrapa*",
+    "invasor*", "usurpador*", "traidor*", "traicion*", "vendepatria*", "lacayo*", "titere*", "secuaz*",
+    "cabecilla*", "complice*", "encubridor*", "prontuariad*", "inescrupulos*", "irresponsable*",
+    "negligente*", "incompetent*", "inepto*", "ineptitud", "mediocre*", "nefast*", "funest*", "lamentable*",
+    "vergonzos*", "verguenza", "bochorno*", "deplorable*", "inaceptable*", "intolerable*", "ilegitim*",
+    "fraude", "fraudulent*", "amanad*", "manipulacion", "manipulad*", "propaganda", "adoctrin*",
+    "mentira*", "mentiros*", "embuste*", "farsa", "circo", "payaso*", "bufon*",
+    "polemic*", "controversial*", "controvertid*", "cuestionad*", "polemista",
+    "historic*", "historia pura", "sin precedentes", "inedit*", "extraordinari*", "espectacular*",
+    "impresionante*", "contundente*", "rotund*", "aplastante*", "categoric*", "demoledor*", "lapidari*",
+    "exitos*", "triunfo*", "victoria*", "derrota*", "fracaso*", "fiasco*", "debacle*",
+    "valiente*", "valentia", "firmeza", "mano dura", "mano firme", "audaz*", "osad*",
+    "polariz*", "divisiv*", "incendiari*", "provocador*", "provocacion*", "desafiante*", "beligerante*",
+    "obsceno*", "escandalos*", "insolito*", "absurd*", "ridicul*", "grotesc*", "esperpent*",
+    "apenas", "solo", "ni siquiera", "por fin", "finalmente", "recien", "nada menos", "ni mas ni menos",
+    "sospechosamente", "curiosamente", "casualmente", "obviamente", "evidentemente",
+    "claramente", "indudablemente", "lamentablemente", "afortunadamente", "por suerte",
+    "milagro*", "salvador*", "salvavidas", "rescate*", "reactivar", "reactivacion", "inyectar", "inyeccion",
+    "blindaje", "blindar*", "arrastr*", "delicad*", "fragil*", "precari*", "tambalea*", "lastr*", "asfixi*", "estrangul*", "sangria", "despilfarro*", "derroche*", "regalo*",
+    "dadiva*", "asistencialis*", "clientelis*", "mermelada", "repartija*", "botin", "festin",
+    "gigante asiatico", "superpotencia", "hegemon*",
+    "revelo", "revela", "revelan", "revelar", "destapo", "destapa", "desnuda", "desnudo", "admitio", "admite",
+    "reconocio", "reconoce", "confeso", "confiesa", "nego", "niega", "arremetio", "arremete", "embistio",
+    "ataco", "ataca", "fustigo", "fustiga", "despotrico", "vocifero", "lanzo duras", "sentencio", "advirtio",
+    "amenazo", "amenaza con", "exigio", "exige", "presiona", "presiono", "chantaje*",
+    "blame*", "blast*", "rip*", "lash* out", "radical*", "extremist*", "thug*", "mob", "rioter*",
+    "terrorist*", "regime", "dictator*", "tyrant*", "corrupt*", "criminal*", "illegal*", "alien*",
+    "patriot*", "hero*", "heroic*", "disgrace*", "shameful", "outrageous", "unacceptable", "historic",
+    "unprecedented", "record", "massive", "huge", "stunning", "staggering", "shocking", "bombshell",
+    "controversial", "embattled", "beleaguered", "scandal-hit", "disgraced", "notorious", "infamous",
+    "boom*", "recovery", "rescue*", "bailout*", "lifeline*", "drag*", "admitted", "admits", "conceded",
+    "concedes", "revealed", "reveals", "claimed", "claims", "insisted", "insists", "denied", "denies",
+    "barely", "merely", "finally", "so-called", "apparently", "allegedly", "out of control"
   ],
+
+  /* Busca una reacción afectiva antes que informar. */
   "emotiva": [
-    "caos", "tragedia", "amenaza", "crisis", "desesperacion", "panico",
-    "escandalo", "indignante", "brutal", "represion", "masacre",
-    "devastador", "alarmante", "dramatico", "aterrador", "peligro",
-    "invasion", "avalancha", "colapso", "guerra", "batalla"
+    "caos", "caotic*", "tragedia*", "tragic*", "amenaza*", "amenazante*", "crisis", "desesperacion", "desesperad*",
+    "panico", "escandalo*", "indignante*", "indignacion", "brutal*", "brutalidad", "represion", "represiv*",
+    "masacre*", "matanza*", "carniceria*", "devastador*", "devastacion", "devasto", "alarmante*", "alarma*",
+    "dramatic*", "aterrador*", "aterroriz*", "terror", "horror*", "horrible*", "horrend*", "espeluznante*",
+    "peligro*", "peligros*", "invasion*", "avalancha*", "colapso*", "colapsa*", "guerra*", "batalla*",
+    "infierno*", "pesadilla*", "apocalip*", "catastrof*", "cataclism*", "debacle", "hecatombe", "desastre*",
+    "desastros*", "calamidad*", "flagelo*", "azote*", "plaga*", "ola de", "oleada*", "tsunami*", "tormenta perfecta",
+    "tormenta*", "terremoto*", "sismo politico", "bomba*", "explosiv*", "estalla*", "estallido*", "dinamita*",
+    "fuego", "en llamas", "incendi*", "arde", "ardiendo", "hoguera", "polvorin",
+    "desplom*", "derrumb*", "hund*", "se hunde", "caida libre", "en picada", "en picado", "precipicio*", "abismo*",
+    "se dispara", "se disparan", "dispara*", "disparo", "se dispararon", "vuela", "vuelan", "por las nubes",
+    "golpe*", "golpea*", "golpazo", "mazazo", "zarpazo", "latigazo", "puñalada", "punalada", "estocada", "bofetada",
+    "castig*", "azota*", "sacud*", "estremec*", "tiembla*", "temblor*", "terremoto", "remezon",
+    "asedio*", "asedia*", "acorrala*", "acosa*", "cerco", "jaque", "en jaque", "jaquea*", "contra las cuerdas",
+    "al borde", "al limite", "al rojo vivo", "en vilo", "en jaque", "agonia", "agoniza*", "moribund*", "muere",
+    "sangr*", "herida*", "cicatriz*", "luto", "duelo", "llanto", "lagrima*", "dolor*", "sufrimiento*", "sufre*",
+    "angustia*", "angustios*", "zozobra", "miedo*", "pavor", "espanto*", "susto*",
+    "furia", "furios*", "ira", "rabia", "colera", "odio*", "odia*", "rencor*", "venganza*",
+    "humillacion*", "humilla*", "aplasta*", "arrasa*", "arrasador*", "barre", "barrio con", "pulveriza*",
+    "liquida*", "destroza*", "destruy*", "destruccion", "ruina*", "arruina*", "quiebra", "naufragio*", "naufraga*",
+    "fantasma*", "espectro*", "sombra*", "pesimismo", "nubarrones", "oscuro*", "negro panorama", "panorama sombrio",
+    "sombrio*", "desolador*", "desgarrador*", "conmovedor*", "estremecedor*", "escalofriante*", "impactante*",
+    "fulminante*", "letal*", "mortal*", "mortifer*", "explota", "exploto", "revienta", "reventon",
+    "giro brusco", "brusc*", "abrupt*", "vertiginos*", "frenetic*", "febril", "euforia", "eufori*", "jubilo",
+    "nervios", "nerviosismo", "histeria", "histeric*", "psicosis", "frenesi",
+    "chaos", "chaotic", "tragedy", "tragic", "threat*", "crisis", "panic*", "scandal*", "outrage*", "brutal*",
+    "massacre*", "slaughter*", "carnage", "devastat*", "alarming", "alarm*", "dramatic*", "terrifying", "terror*",
+    "horror*", "horrific", "nightmare*", "catastroph*", "disaster*", "apocalyp*", "doom*", "plung*", "plummet*",
+    "tumbl*", "crash*", "collaps*", "meltdown*", "rout", "bloodbath", "sell-off", "selloff", "turmoil",
+    "soar*", "sky-high", "surg*", "skyrocket*", "spik*", "jump*", "leap*", "hammer*", "pummel*", "clobber*", "batter*",
+    "slam*", "shudder*", "jitter*", "anxiet*", "spook*", "rattl*", "shaken", "shock*",
+    "storm*", "perfect storm", "firestorm", "inferno", "explod*", "battle*",
+    "overwhelm*", "crush*", "wipe* out", "sink*", "sank", "dive*", "nosedive*", "freefall", "free fall",
+    "balloon*", "looms", "looming", "brink", "abyss", "cliff", "bleak", "grim", "dire", "gloomy"
   ],
+
+  /* Reduce la gravedad de un hecho verificable. */
   "atenuante": [
-    "incidente", "exceso", "ajuste", "irregularidad", "malentendido",
-    "desafortunado", "aislado", "controlada", "controlado", "leve",
-    "roce", "episodio", "medida correctiva", "reacomodo", "presunto"
+    "incidente*", "exceso*", "ajuste*", "irregularidad*", "malentendido*", "desafortunad*", "aislad*",
+    "controlad*", "leve*", "roce*", "episodio*", "medida correctiva", "reacomodo*", "presunt*",
+    "altercado*", "enfrentamiento*", "escaramuza*", "refriega*", "trifulca*", "gresca*", "rifirrafe*",
+    "desencuentro*", "diferencia*", "tension*", "friccion*", "impasse", "traspie*", "tropiezo*", "desliz",
+    "equivocacion*", "omision", "descuido*", "falla*", "fallo*", "imprecision*",
+    "inconsistencia*", "observacion*", "objecion*", "reparo*", "cuestionamiento*",
+    "daños colaterales", "danos colaterales", "victimas colaterales", "uso proporcional", "uso de la fuerza",
+    "intervencion", "operativo*", "despeje", "desalojo*", "neutraliz*", "abatid*", "abatio", "dado de baja",
+    "fallecid*", "perdio la vida", "perdieron la vida", "se quito la vida", "deceso*",
+    "reestructuracion", "racionalizacion", "optimizacion", "flexibiliz*", "sinceramiento", "sincerar",
+    "correccion", "corregir", "recalibr*", "ajustar", "reacomodar", "redimensionar", "desvinculacion",
+    "desvinculad*", "cese*", "separacion", "reduccion de personal", "movilidad laboral",
+    "desaceleracion", "enfriamiento", "moderacion", "se modera", "se enfria", "ligera", "ligero", "ligeramente",
+    "levemente", "relativamente", "parcialmente", "momentaneamente", "temporalmente",
+    "transitori*", "puntual*", "focalizad*", "acotad*", "minimo*", "marginal*",
+    "contracciclic*", "anticiclic*", "estimulo*", "colchon*", "espacio fiscal", "holgura",
+    "dentro de lo previsto", "en linea con", "dentro del rango", "al alcance", "en camino", "en la senda",
+    "similar", "parecid*", "resiliencia", "resiliente*", "solidez",
+    "se recupera", "recuperacion", "repunte*", "rebote*", "alivio", "respiro",
+    "incident*", "isolated", "minor", "slight*", "modest*", "mild*", "limited", "contained", "controlled",
+    "alleged*", "purported*", "misunderstanding", "mistake*", "error*", "glitch*", "hiccup*",
+    "setback*", "adjustment*", "correction*", "restructuring", "downsiz*", "rightsizing", "layoffs",
+    "collateral damage", "clash*", "skirmish*", "scuffle*", "tension*", "friction*",
+    "on track", "within reach", "in line with", "resilien*", "steady", "stable", "stabiliz*", "soft landing",
+    "cooling", "moderat*", "eased", "easing", "relief", "rebound*"
   ],
+
+  /* Afirma algo sin una fuente que se pueda identificar. */
   "atribucion-vaga": [
-    "fuentes cercanas", "allegados", "trascendio", "se rumorea",
-    "expertos advierten", "analistas coinciden", "se especula",
-    "fuentes confiables", "voceros no identificados", "segun se supo",
-    "personas del entorno", "no quiso ser identificado", "todos saben"
+    "fuentes cercanas", "fuente cercana", "allegados", "allegado", "trascendio", "se rumorea", "rumor*",
+    "expertos advierten", "analistas coinciden", "se especula", "especulacion*", "fuentes confiables",
+    "voceros no identificados", "segun se supo", "personas del entorno", "no quiso ser identificado",
+    "todos saben", "fuentes oficiales", "fuentes oficiosas", "fuentes extraoficiales", "fuentes de inteligencia",
+    "fuentes del gobierno", "fuentes del sector", "fuentes del mercado", "fuentes policiales", "fuentes judiciales",
+    "fuentes diplomaticas", "fuentes consultadas", "una fuente", "fuentes", "segun fuentes", "de acuerdo con fuentes",
+    "expertos", "especialistas", "analistas", "economistas", "observadores", "entendidos", "conocedores",
+    "algunos", "algunas", "muchos", "muchas", "varios", "varias", "diversos", "diversas", "numerosos", "numerosas",
+    "la mayoria", "gran parte", "buena parte", "cada vez mas", "cada vez menos", "un sector",
+    "se dice", "se cree", "se sabe", "se estima", "se calcula", "se teme", "se espera", "se preve", "se afirma",
+    "se comenta", "se asegura", "se informo", "se supo", "se conocio", "se filtro", "se senala", "se senalo",
+    "segun se informo", "segun trascendio", "segun versiones", "versiones", "versiones periodisticas",
+    "segun reportes", "trascendidos", "corre la voz", "en los pasillos", "radio pasillo",
+    "dudas", "temores", "preocupacion", "preocupaciones", "inquietud", "inquietudes", "malestar", "desconfianza",
+    "incertidumbre", "sospechas", "alarmas", "criticas", "cuestionamientos", "rechazo",
+    "los mercados", "el mercado", "los inversores", "los inversionistas", "la opinion publica", "la ciudadania",
+    "los peruanos", "la poblacion", "la comunidad internacional", "occidente",
+    "considerad*", "calificad*", "tildad*", "senalad*", "denominad*", "conocid* como", "llamad*",
+    "habria", "habrian", "seria", "serian", "estaria", "estarian", "tendria", "tendrian", "podria", "podrian",
+    "presuntamente", "aparentemente", "al parecer", "supuestamente", "segun parece", "todo indica",
+    "todo apunta", "nadie duda", "es sabido", "es un secreto a voces", "es evidente", "no cabe duda",
+    "sources say", "sources said", "a source", "sources close", "people familiar", "familiar with the matter",
+    "officials said", "insiders", "insider*", "experts", "analysts", "observers", "critics", "some say",
+    "many believe", "it is believed", "it is said", "reportedly", "rumou?r*", "speculation", "fears", "worries",
+    "concerns", "doubts", "unrest", "markets", "investors", "the market", "widely seen",
+    "widely expected", "it is understood", "according to reports", "reports say", "so-called"
   ]
 };
 
@@ -5524,7 +5564,7 @@ function vistaAnalizar() {
   '<div class="contenedor seccion">' +
     '<div class="encabezado-seccion aparece">' +
       "<h1>Analiza tu noticia</h1>" +
-      "<p>Pega un titular o un párrafo y la herramienta marca las palabras que figuran en su diccionario.</p>" +
+      "<p>Pega un titular o un párrafo, en español o en inglés, y la herramienta marca las palabras valorativas, emotivas, atenuantes y de atribución vaga que figuran en su diccionario. Pasa el cursor sobre una marca para ver por qué se señala.</p>" +
     "</div>" +
     '<div class="caja-analisis aparece aparece-1">' +
       '<textarea id="entrada" placeholder="Pega aquí un titular o un párrafo de noticia"></textarea>' +
@@ -5539,7 +5579,7 @@ function vistaAnalizar() {
 
   document.getElementById("ejemplo").addEventListener("click", function () {
     document.getElementById("entrada").value =
-      "Fuentes cercanas al operativo confirmaron que la turba generó un caos total antes de que la situación quedara controlada.";
+      "Fuentes cercanas al operativo confirmaron que la turba generó un caos total antes de que la situación quedara controlada. Los mercados se desploman y crecen las dudas sobre el polémico plan del Gobierno, que apenas logró un leve repunte.";
   });
 
   document.getElementById("analizar").addEventListener("click", function () {
@@ -5551,25 +5591,57 @@ function vistaAnalizar() {
       return;
     }
 
-    const encontradas = [];
-    let trabajo = texto;
+    /* Se normaliza letra por letra (sin tildes, minúsculas) para que
+       cada posición del texto normalizado coincida con la del original. */
+    let norm = "";
+    for (let k = 0; k < texto.length; k++) {
+      const n = sinTildes(texto[k]);
+      norm += n.length === 1 ? n : texto[k].toLowerCase().charAt(0);
+    }
 
+    /* Cada entrada del diccionario se convierte en una expresión que
+       solo marca palabras completas. Un asterisco final acepta
+       cualquier terminación (desplom* → desplomó, desplome, desploman). */
+    const candidatos = [];
     Object.keys(DICCIONARIO).forEach(function (cat) {
-      DICCIONARIO[cat].forEach(function (palabra) {
-        const pos = sinTildes(trabajo).indexOf(sinTildes(palabra));
-        if (pos === -1) return;
-        const literal = trabajo.substr(pos, palabra.length);
-        const i = encontradas.length;
-        encontradas.push({ literal: literal, categoria: cat });
-        trabajo = trabajo.slice(0, pos) + "\u0001" + i + "\u0001" + trabajo.slice(pos + palabra.length);
+      DICCIONARIO[cat].forEach(function (entrada) {
+        const base = sinTildes(entrada).trim();
+        if (!base) return;
+        const cuerpo = base
+          .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+          .replace(/\*/g, "[a-z0-9]*")
+          .replace(/\s+/g, "\\s+");
+        const patron = new RegExp("(^|[^a-z0-9])(" + cuerpo + ")(?![a-z0-9])", "g");
+        let m;
+        while ((m = patron.exec(norm)) !== null) {
+          const inicio = m.index + m[1].length;
+          candidatos.push({ inicio: inicio, fin: inicio + m[2].length, categoria: cat, entrada: entrada });
+          patron.lastIndex = inicio + 1;
+        }
       });
     });
 
-    let html = esc(trabajo);
-    encontradas.forEach(function (g, i) {
-      html = html.replace("\u0001" + i + "\u0001",
-        '<mark class="marca ' + g.categoria + '" data-trazo="' + esc(CATEGORIAS[g.categoria].trazo) + '">' + esc(g.literal) + "</mark>");
+    /* Si dos entradas se superponen gana la más larga (la frase sobre
+       la palabra suelta) y, a igual largo, la que aparece antes. */
+    candidatos.sort(function (x, y) { return (y.fin - y.inicio) - (x.fin - x.inicio) || x.inicio - y.inicio; });
+    const ocupado = new Array(texto.length).fill(false);
+    const encontradas = [];
+    candidatos.forEach(function (c) {
+      for (let k = c.inicio; k < c.fin; k++) if (ocupado[k]) return;
+      for (let k = c.inicio; k < c.fin; k++) ocupado[k] = true;
+      encontradas.push({ inicio: c.inicio, fin: c.fin, literal: texto.slice(c.inicio, c.fin), categoria: c.categoria });
     });
+    encontradas.sort(function (x, y) { return x.inicio - y.inicio; });
+
+    let html = "", cursor = 0;
+    encontradas.forEach(function (g) {
+      html += esc(texto.slice(cursor, g.inicio)) +
+        '<mark class="marca ' + g.categoria + '" data-trazo="' + esc(CATEGORIAS[g.categoria].trazo) +
+        '" title="' + esc(CATEGORIAS[g.categoria].nombre + ": " + CATEGORIAS[g.categoria].definicion) + '">' +
+        esc(g.literal) + "</mark>";
+      cursor = g.fin;
+    });
+    html += esc(texto.slice(cursor));
 
     const cuenta = {};
     encontradas.forEach(function (g) { cuenta[g.categoria] = (cuenta[g.categoria] || 0) + 1; });
@@ -5582,11 +5654,22 @@ function vistaAnalizar() {
       return '<span class="lg" data-trazo="' + CATEGORIAS[k].trazo + '" style="color:var(--' + k + ')">' + esc(CATEGORIAS[k].nombre) + "</span>";
     }).join("");
 
+    const detalle = encontradas.length ? Object.keys(CATEGORIAS).filter(function (k) { return cuenta[k]; }).map(function (k) {
+      const vistas = [];
+      encontradas.forEach(function (g) {
+        const p = g.literal.toLowerCase();
+        if (g.categoria === k && vistas.indexOf(p) === -1) vistas.push(p);
+      });
+      return '<p class="meta" style="margin-top:10px"><strong style="color:var(--' + k + ')">' + esc(CATEGORIAS[k].nombre) +
+        "</strong> — " + esc(CATEGORIAS[k].definicion) + "<br>" + esc(vistas.join(", ")) + "</p>";
+    }).join("") : "";
+
     salida.innerHTML =
       '<div class="resultado-analisis">' +
         '<div class="leyenda" style="margin-bottom:20px">' + leyenda + "</div>" +
         '<p class="texto-analizado">' + html + "</p>" +
         '<p class="meta">' + resumen + "</p>" +
+        detalle +
       "</div>";
   });
 }
@@ -5716,7 +5799,6 @@ function enrutar() {
   else if (seccion === "metodologia")  vistaMetodologia();
   else                                 vistaCasos(); /* la portada de noticias es ahora el inicio */
 
-  actualizarIntro(seccion);
   pintarBarraTemas();
 
   document.querySelectorAll("#menu a").forEach(function (a) {
@@ -5730,23 +5812,6 @@ function enrutar() {
     if (destino) { destino.scrollIntoView(); return; }
   }
   window.scrollTo(0, 0);
-}
-
-/* Pantalla de introducción: solo en la página principal, y solo la
-   primera vez en esta visita (sessionStorage, no localStorage: se
-   olvida cuando se cierra la pestaña o el navegador). */
-const LS_INTRO_VISTA = "kubrick:introVista";
-function actualizarIntro(seccion) {
-  const intro = document.getElementById("intro-inicio");
-  if (!intro) return;
-  const esInicio = seccion === "inicio" || seccion === "casos";
-  let yaVista = false;
-  try { yaVista = sessionStorage.getItem(LS_INTRO_VISTA) === "1"; } catch (e) {}
-  const mostrar = esInicio && !yaVista;
-  intro.classList.toggle("oculta", !mostrar);
-  if (mostrar) {
-    try { sessionStorage.setItem(LS_INTRO_VISTA, "1"); } catch (e) {}
-  }
 }
 
 /* Barra de temas: segunda fila del header, fija, igual en toda la web.
