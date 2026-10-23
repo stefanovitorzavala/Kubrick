@@ -1034,6 +1034,16 @@ mark.atribucion-vaga { color: var(--atribucion-vaga); text-decoration: underline
 
 mark.marca:hover { background: rgba(0,0,0,.06); }
 
+/* Analizador: palabras dentro de citas (son de la fuente, no del medio) */
+mark.marca.en-cita { background: rgba(0,0,0,.07); }
+.revision-lista { list-style: none; padding: 0; margin: 14px 0 0; }
+.revision-lista li { font-size: .9rem; color: var(--gris); margin: 6px 0; line-height: 1.45; }
+.revision-lista li strong { color: var(--tinta); }
+.revision-ok   { color: #2E7D32; font-weight: 700; }
+.revision-no   { color: #B3261E; font-weight: 700; }
+.revision-med  { color: #9A6300; font-weight: 700; }
+.analisis-titulo { font-family: var(--ui); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--gris); margin: 26px 0 4px; }
+
 .limpio mark.marca { color: inherit; text-decoration: none; cursor: default; background: none; }
 
 .controles-lexico {
@@ -3000,7 +3010,37 @@ const DICCIONARIO = {
     "controversial", "embattled", "beleaguered", "scandal-hit", "disgraced", "notorious", "infamous",
     "boom*", "recovery", "rescue*", "bailout*", "lifeline*", "drag*", "admitted", "admits", "conceded",
     "concedes", "revealed", "reveals", "claimed", "claims", "insisted", "insists", "denied", "denies",
-    "barely", "merely", "finally", "so-called", "apparently", "allegedly", "out of control"
+    "barely", "merely", "finally", "so-called", "apparently", "allegedly", "out of control",
+    "malcriad*", "maleducad*", "malandr*", "maleante*", "malviviente*", "vago*", "vagos", "flojo*", "ocioso*",
+    "indisciplinad*", "inadaptad*", "desadaptad*", "conflictiv*", "problematic*", "revoltoso*", "pendenciero*",
+    "pandiller*", "lumpen*", "delincuencial*", "facineros*", "rufian*", "bandido*", "bandolero*", "forajido*",
+    "chusma*", "populacho", "plebe", "mocoso*", "pirañita*", "piranita*", "chibolo*", "malhechor*",
+    "lacra*", "escoria*", "basura*", "parasito*", "sanguijuela*", "rata*", "cucaracha*", "alimaña*", "alimana*",
+    "cancer social", "tumor", "gangrena", "manzana podrida", "manzanas podridas", "oveja negra", "ovejas negras",
+    "perturb*", "desestabiliz*", "sabotea*", "sabotaje*", "boicot*", "obstruccionis*", "filibuster*",
+    "tolerancia cero", "principio de autoridad", "orden y disciplina", "poner orden", "imponer orden",
+    "limpieza", "limpiar", "erradicar", "erradicacion", "extirpar", "barrer con", "acabar con",
+    "mano de hierro", "puño de hierro", "puno de hierro", "linea dura", "duro golpe", "golpe certero",
+    "antipatria*", "antiperuano*", "enemigo* del pais", "enemigos de la patria", "caviares", "rojete*", "terrucos",
+    "comechado*", "mermeler*", "otorongo*", "congresaurio*", "lagarto*", "lobby", "lobista*",
+    "argolla*", "cogollo*", "camarilla*", "mafia de", "organizacion criminal", "banda criminal",
+    "despotic*", "arbitrari*", "abusiv*", "prepotente*", "soberbi*", "arrogante*", "cinic*", "hipocrit*",
+    "oportunista*", "demagogic*", "electorer*", "populachero*", "improvisad*", "improvisacion", "chapucer*",
+    "desastros*", "calamitos*", "vergonzante*", "indigno*", "infame*", "repudiable*", "abominable*",
+    "aberrante*", "atroz", "atroces", "monstruos*", "diabolic*", "perverso*", "siniestro*", "macabro*",
+    "visionari*", "ejemplar*", "modelico*", "brillante*", "magistral*", "acertad*", "sabia decision",
+    "valiente decision", "gran dia", "dia historico", "respuesta historica", "fuerte e historica",
+    "mega", "mega nino", "meganino", "megaobra*", "megaproyecto*", "faraonic*",
+    "bonazo*", "regalon*", "papa estado", "estado niñera", "estado ninera", "paternalis*", "subsidiad*",
+    "gratuidad", "a costa de", "a expensas de", "con la plata de todos", "dinero de los contribuyentes",
+    "nefasto", "pesimo", "pesima", "pesimos", "pesimas", "terrible*", "malisim*", "buenisim*",
+    "thug*", "looter*", "rogue", "radicalized", "hardliner*", "zealot*", "militant*", "agitator*",
+    "lawless", "reckless", "irresponsible", "incompetent", "inept", "failed", "failing", "botched", "fiasco",
+    "brilliant", "landmark", "milestone", "game-changer", "game changer", "bold", "tough", "crackdown*",
+    "draconian", "heavy-handed", "authoritarian", "strongman", "puppet", "cronies", "crony", "elite*",
+    "woke", "leftist*", "far-left", "far-right", "ultranationalist*", "hate", "hateful", "vile", "evil",
+    "untenable", "unsustainable", "drag on", "lifeline", "windfall", "giveaway*", "handout*", "splurge*",
+    "lavish*", "bloated", "wasteful", "pork", "sweetheart deal"
   ],
 
   /* Busca una reacción afectiva antes que informar. */
@@ -3038,7 +3078,29 @@ const DICCIONARIO = {
     "slam*", "shudder*", "jitter*", "anxiet*", "spook*", "rattl*", "shaken", "shock*",
     "storm*", "perfect storm", "firestorm", "inferno", "explod*", "battle*",
     "overwhelm*", "crush*", "wipe* out", "sink*", "sank", "dive*", "nosedive*", "freefall", "free fall",
-    "balloon*", "looms", "looming", "brink", "abyss", "cliff", "bleak", "grim", "dire", "gloomy"
+    "balloon*", "looms", "looming", "brink", "abyss", "cliff", "bleak", "grim", "dire", "gloomy",
+    "pánico", "terror", "zozobra", "conmocion", "conmocionad*", "consternacion", "consternad*", "indignad*",
+    "estupor", "estupefaccion", "estremecimiento", "escalofrio*", "tension maxima", "maxima tension",
+    "alerta roja", "codigo rojo", "estado de alerta", "en alerta", "emergencia", "SOS", "grito*", "clamor*",
+    "clama*", "suplica*", "implora*", "ruega*", "desgarr*", "desesper*", "agonico*", "dantesc*", "infernal*",
+    "salvajada*", "barbarie", "barbar*", "sanguinari*", "cruel*", "crueldad", "despiadad*", "feroz", "feroces",
+    "violent*", "violencia", "vandalismo", "saqueo*", "saquea*", "pillaje", "linchamiento*", "lincha*",
+    "ola delictiva", "ola de violencia", "ola criminal", "espiral", "escalada", "desborde*", "desborda*",
+    "fuera de control", "descontrol*", "anarquia", "anarquic*", "desgobierno", "vacio de poder", "ingobernab*",
+    "estado fallido", "narcoestado", "tierra de nadie", "zona roja", "zona liberada", "bomba de tiempo",
+    "olla de presion", "punto de quiebre", "punto de no retorno", "cuenta regresiva", "ultimatum",
+    "sin control", "sin freno*", "desenfrenad*", "galopante*", "imparable*", "incontenible*", "irrefrenable*",
+    "ahoga*", "asfixia*", "estrangula*", "desangra*", "carcome*", "corroe*", "envenena*", "contamina*",
+    "mazazo", "jarro de agua fria", "balde de agua fria", "baldazo", "duro revés", "duro reves", "reves",
+    "sacudon*", "remezon*", "terremoto politico", "tsunami politico", "huracan*", "vendaval*", "torbellino*",
+    "naufrag*", "a la deriva", "hundimiento", "debacle", "descalabro*", "hecatombe", "cataclismo",
+    "se esfuma*", "se evapora*", "volatiliz*",
+    "pulveriz*", "tritura*", "demuele*", "demolio", "aniquil*", "extermin*",
+    "heartbreaking", "harrowing", "chilling", "gruesome", "horrifying", "devastated", "shattered", "traumatic",
+    "mayhem", "pandemonium", "frenzy", "frenzied", "rampage", "rampant", "spiral*", "escalat*", "spiraling",
+    "out-of-control", "runaway", "skyrocketing", "soaring", "plummeting", "tanking", "tanked", "tank*",
+    "wiped", "obliterat*", "decimat*", "ravag*", "wreak*", "wreck*", "havoc", "fury", "furious", "anger*",
+    "outcry", "uproar", "backlash", "furor*", "slump*", "crater*", "wobbl*", "jolt*", "roil*", "reel*"
   ],
 
   /* Reduce la gravedad de un hecho verificable. */
@@ -3067,7 +3129,29 @@ const DICCIONARIO = {
     "setback*", "adjustment*", "correction*", "restructuring", "downsiz*", "rightsizing", "layoffs",
     "collateral damage", "clash*", "skirmish*", "scuffle*", "tension*", "friction*",
     "on track", "within reach", "in line with", "resilien*", "steady", "stable", "stabiliz*", "soft landing",
-    "cooling", "moderat*", "eased", "easing", "relief", "rebound*"
+    "cooling", "moderat*", "eased", "easing", "relief", "rebound*",
+    "separacion definitiva", "separacion temporal", "retiro del alumno", "cambio de colegio", "reubicacion",
+    "reubicar", "traslado*", "reordenamiento", "reorganizacion", "redistribucion", "reasignacion",
+    "medida disciplinaria", "medidas disciplinarias", "gestion de la disciplina", "convivencia escolar",
+    "liberacion de la via", "recuperacion de la via", "restablecer el orden", "restablecimiento del orden",
+    "control de multitudes", "contencion", "disuasion", "disuasiv*", "elementos disuasivos", "perdigones",
+    "uso progresivo", "uso diferenciado", "agentes quimicos", "gas pimienta", "bombas lacrimogenas",
+    "personas intervenidas", "intervenidos", "retenid*", "conducid*", "puesto a disposicion",
+    "efectos colaterales", "costos sociales", "impacto social", "situacion complicada", "momento dificil",
+    "escenario retador", "desafio*", "retos", "reto", "oportunidad de mejora", "aspectos por mejorar",
+    "sobrecosto*", "desfase*", "desbalance*", "rezago*",
+    "flexibilizacion", "sinceramiento de precios", "ajuste de precios", "actualizacion de tarifas",
+    "correccion de precios", "reajuste*", "racionalizar", "focalizar", "priorizar", "repriorizar",
+    "financiamiento adicional", "operaciones de endeudamiento",
+    "senda de convergencia", "nueva convergencia",
+    "dentro de lo esperado", "lo previsto", "conforme a lo previsto", "bajo control", "situacion controlada",
+    "sin mayores consecuencias", "sin mayores incidentes", "sin novedad", "normalidad", "con normalidad",
+    "mayormente pacific*", "en su mayoria pacific*", "relativa calma", "tensa calma",
+    "perdida de vidas",
+    "officer-involved", "use of force", "law enforcement action", "detained", "in custody", "neutralized",
+    "enhanced interrogation", "pacification", "restructuring", "streamlining", "efficiencies", "realignment",
+    "headwinds", "soft patch", "growth recession", "negative growth", "price adjustment", "fiscal space",
+    "targeted", "temporary", "transitory", "one-off", "contained", "manageable", "orderly"
   ],
 
   /* Afirma algo sin una fuente que se pueda identificar. */
@@ -3097,7 +3181,27 @@ const DICCIONARIO = {
     "officials said", "insiders", "insider*", "experts", "analysts", "observers", "critics", "some say",
     "many believe", "it is believed", "it is said", "reportedly", "rumou?r*", "speculation", "fears", "worries",
     "concerns", "doubts", "unrest", "markets", "investors", "the market", "widely seen",
-    "widely expected", "it is understood", "according to reports", "reports say", "so-called"
+    "widely expected", "it is understood", "according to reports", "reports say", "so-called",
+    "segun algunos", "segun muchos", "segun expertos", "segun analistas", "segun especialistas",
+    "para algunos", "para muchos", "para los expertos", "para los analistas", "en opinion de expertos",
+    "muchos creen", "muchos piensan", "muchos consideran", "algunos creen", "algunos piensan", "algunos sostienen",
+    "hay quienes", "no faltan quienes", "existe la percepcion", "existe consenso", "hay consenso",
+    "la opinion generalizada", "es vox populi", "voz populi", "dicen", "comentan", "aseguran", "afirman",
+    "se ha dicho", "se ha senalado", "se ha comentado", "se rumora", "se conjetura", "trascendidos",
+    "medios locales", "medios internacionales", "la prensa", "redes sociales", "en redes",
+    "internautas", "cibernautas", "testigos",
+    "voceros", "portavoces",
+    "fuentes de palacio", "fuentes del ejecutivo", "fuentes del congreso", "fuentes fiscales", "fuentes militares",
+    "un alto funcionario", "un funcionario", "un vocero", "un portavoz", "un diplomatico", "un asesor",
+    "personas cercanas", "personas con conocimiento", "con conocimiento del tema", "conocedores del tema",
+    "observadores politicos", "analistas politicos", "politologos", "economistas consultados",
+    "los peruanos", "los ciudadanos", "los limenos", "las familias", "los consumidores", "el ciudadano de a pie",
+    "la calle", "el sentir", "el clamor popular", "la indignacion ciudadana", "la poblacion exige",
+    "en circulos", "en el entorno", "en el oficialismo", "en la oposicion", "en el sector privado",
+    "senior officials", "a senior official", "an official", "aides", "people close",
+    "people with knowledge", "sources familiar", "unnamed", "anonymous", "observers say", "critics say",
+    "experts say", "analysts say", "many say", "some argue", "it is feared", "it is thought", "widely believed",
+    "witnesses", "social media"
   ]
 };
 
@@ -5559,12 +5663,145 @@ function conectarEventos(caso) {
 
 /* -------------------- vista: analizador -------------------- */
 
+/* Reglas que no dependen de una palabra suelta sino de una
+   construcción. Se aplican sobre el texto normalizado (sin tildes,
+   minúsculas). "fuerte" indica que la regla manda sobre una palabra
+   del diccionario que caiga dentro de la misma frase. */
+const REGLAS_ANALIZADOR = [
+  { re: /\b(muy|totalmente|completamente|absolutamente|extremadamente|sumamente|tremendamente|enormemente|profundamente|gravemente|altamente|realmente|verdaderamente|increiblemente|terriblemente|brutalmente|duramente|fuertemente|severamente|drasticamente|radicalmente)\b/g,
+    cat: "emotiva", motivo: "Intensificador: refuerza la carga sin añadir información." },
+  { re: /(?<=\b(?:los|las|el|la|lo)\s+)mas(?=\s+[a-z]{3,})/g,
+    cat: "emotiva", motivo: "Superlativo: presenta como extremo algo que no se mide." },
+  { re: /\b[a-z]{3,}isim(?:o|a|os|as)\b/g,
+    cat: "emotiva", motivo: "Superlativo absoluto (-ísimo)." },
+  { re: /\b(todos|todas|nadie|siempre|nunca|jamas|ninguno|ninguna|cualquiera|everyone|everybody|nobody|always|never)\b/g,
+    cat: "valorativa", motivo: "Generalización absoluta: afirma algo de todos o de nadie sin datos." },
+  { re: /\b(unos pocos|unas pocas|un punado de|apenas unos|apenas unas|solo unos|solo unas|unos cuantos|unas cuantas|una minoria|un grupo minoritario|a handful of|a few)\b/g,
+    cat: "atenuante", motivo: "Minimiza: reduce a un grupo pequeño sin dar una cifra." },
+  { re: /\b(fue|fueron|ha sido|han sido|habia sido|habian sido|sera|seran|resulto|resultaron)\s+[a-z]+(?:ado|ada|ados|adas|ido|ida|idos|idas|cho|cha|chos|chas|to|ta|tos|tas)\b(?![^.;:]{0,60}\bpor\b)/g,
+    cat: "atenuante", motivo: "Voz pasiva sin responsable: dice qué pasó, no quién lo hizo.", fuerte: true },
+  { re: /\b(se produjo|se produjeron|se registro|se registraron|se reporto|se reportaron|se presento|se presentaron|se suscito|se suscitaron|hubo|resultaron)\s+(?:\w+\s+){0,2}(enfrentamientos?|incidentes?|disturbios|choques?|muertos?|fallecidos?|heridos?|lesionados?|danos|excesos|detenidos|victimas|disparos|explosiones?)\b/g,
+    cat: "atenuante", motivo: "Construcción impersonal: el hecho ocurre sin un responsable.", fuerte: true },
+  { re: /\b(habria|habrian|estaria|estarian|tendria|tendrian)\s+[a-z]+(?:ado|ada|ados|adas|ido|ida|idos|idas|ando|iendo)\b/g,
+    cat: "atribucion-vaga", motivo: "Condicional de rumor: presenta como posible algo que no se confirma.", fuerte: true },
+  { re: /\b(was|were|has been|have been|had been)\s+[a-z]+ed\b(?![^.;:]{0,60}\bby\b)/g,
+    cat: "atenuante", motivo: "Voz pasiva sin responsable (inglés).", fuerte: true }
+];
+
+const VERBOS_ATRIBUCION = /\b(dijo|dice|afirmo|afirma|senalo|senala|sostuvo|sostiene|indico|indica|explico|explica|declaro|declara|aseguro|asegura|informo|informa|preciso|precisa|anadio|agrego|manifesto|subrayo|destaco|advirtio|comento|expreso|detallo|anuncio|anuncia|confirmo|reconocio|nego|said|says|told|added|stated|explained|announced|confirmed|denied)\b/g;
+const CIERRES_CITA = { "“": "”", "«": "»", "\"": "\"", "‘": "’" };
+
+function normalizarPorLetra(texto) {
+  let norm = "";
+  for (let k = 0; k < texto.length; k++) {
+    const n = sinTildes(texto[k]);
+    norm += n.length === 1 ? n : texto[k].toLowerCase().charAt(0);
+  }
+  return norm;
+}
+
+function zonasDeCita(texto) {
+  const en = new Array(texto.length).fill(false);
+  const tramos = [];
+  let cierre = null, inicio = 0;
+  for (let k = 0; k < texto.length; k++) {
+    const c = texto[k];
+    if (cierre === null) {
+      if (CIERRES_CITA[c]) { cierre = CIERRES_CITA[c]; inicio = k; }
+    } else if (c === cierre) {
+      for (let j = inicio; j <= k; j++) en[j] = true;
+      tramos.push(texto.slice(inicio + 1, k));
+      cierre = null;
+    }
+  }
+  return { en: en, tramos: tramos };
+}
+
+function analizarTexto(texto) {
+  const norm = normalizarPorLetra(texto);
+  const citas = zonasDeCita(texto);
+  const candidatos = [];
+
+  Object.keys(DICCIONARIO).forEach(function (cat) {
+    DICCIONARIO[cat].forEach(function (entrada) {
+      const base = sinTildes(entrada).trim();
+      if (!base) return;
+      const cuerpo = base
+        .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+        .replace(/\*/g, "[a-z0-9]*")
+        .replace(/\s+/g, "\\s+");
+      const patron = new RegExp("(^|[^a-z0-9])(" + cuerpo + ")(?![a-z0-9])", "g");
+      let m;
+      while ((m = patron.exec(norm)) !== null) {
+        const inicio = m.index + m[1].length;
+        candidatos.push({ inicio: inicio, fin: inicio + m[2].length, categoria: cat, prioridad: 1,
+          motivo: CATEGORIAS[cat].definicion });
+        patron.lastIndex = inicio + 1;
+      }
+    });
+  });
+
+  REGLAS_ANALIZADOR.forEach(function (r) {
+    const patron = new RegExp(r.re.source, "g");
+    let m;
+    while ((m = patron.exec(norm)) !== null) {
+      if (!m[0]) { patron.lastIndex++; continue; }
+      candidatos.push({ inicio: m.index, fin: m.index + m[0].length, categoria: r.cat,
+        prioridad: r.fuerte ? 2 : 0, motivo: r.motivo });
+    }
+  });
+
+  /* Gana la regla fuerte, después el diccionario y después la regla
+     débil; a igual prioridad, el tramo más largo. */
+  candidatos.sort(function (x, y) {
+    return (y.prioridad - x.prioridad) || ((y.fin - y.inicio) - (x.fin - x.inicio)) || (x.inicio - y.inicio);
+  });
+  const ocupado = new Array(texto.length).fill(false);
+  const marcas = [];
+  candidatos.forEach(function (c) {
+    for (let k = c.inicio; k < c.fin; k++) if (ocupado[k]) return;
+    for (let k = c.inicio; k < c.fin; k++) ocupado[k] = true;
+    marcas.push({ inicio: c.inicio, fin: c.fin, literal: texto.slice(c.inicio, c.fin),
+      categoria: c.categoria, motivo: c.motivo, enCita: citas.en[c.inicio] });
+  });
+  marcas.sort(function (x, y) { return x.inicio - y.inicio; });
+
+  /* Revisión de omisiones: señales simples, no un juicio. */
+  const oraciones = texto.split(/(?<=[.!?])\s+/);
+  const atribuciones = (norm.match(VERBOS_ATRIBUCION) || []).length + (norm.match(/\bsegun\s+[a-z]/g) || []).length +
+    (norm.match(/\baccording to\b/g) || []).length;
+  const citasLargas = citas.tramos.filter(function (t) { return t.trim().split(/\s+/).length >= 4; });
+  const nombres = {};
+  (texto.match(/\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+(?:de\s+|del\s+|la\s+)?[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+/g) || []).forEach(function (n) { nombres[n] = true; });
+  const siglas = {};
+  (texto.match(/\b[A-ZÁÉÍÓÚÑ]{3,}\b/g) || []).forEach(function (n) { siglas[n] = true; });
+  const cifras = (texto.match(/\d[\d.,]*\s*(%|por ciento|millones|mil|billones)?/g) || []).length;
+  const cifrasConFuente = oraciones.filter(function (o) {
+    const on = sinTildes(o);
+    return /\d/.test(o) && /\b(segun|de acuerdo con|informo|reporto|datos de|cifras de|estadistica|encuesta|according to|data from)\b/.test(on);
+  }).length;
+  const oracionesConCifras = oraciones.filter(function (o) { return /\d/.test(o); }).length;
+
+  return {
+    marcas: marcas,
+    revision: {
+      atribuciones: atribuciones,
+      citas: citasLargas.length,
+      actores: Object.keys(nombres).length + Object.keys(siglas).length,
+      cifras: cifras,
+      oracionesConCifras: oracionesConCifras,
+      cifrasConFuente: cifrasConFuente,
+      palabras: texto.trim().split(/\s+/).length
+    }
+  };
+}
+
 function vistaAnalizar() {
   app.innerHTML =
   '<div class="contenedor seccion">' +
     '<div class="encabezado-seccion aparece">' +
       "<h1>Analiza tu noticia</h1>" +
-      "<p>Pega un titular o un párrafo, en español o en inglés, y la herramienta marca las palabras valorativas, emotivas, atenuantes y de atribución vaga que figuran en su diccionario. Pasa el cursor sobre una marca para ver por qué se señala.</p>" +
+      "<p>Pega un titular o una nota completa, en español o en inglés. La herramienta marca el lenguaje valorativo, emotivo, atenuante y de atribución vaga, separa lo que dice el medio de lo que dicen sus fuentes entre comillas y revisa qué elementos de información faltan.</p>" +
     "</div>" +
     '<div class="caja-analisis aparece aparece-1">' +
       '<textarea id="entrada" placeholder="Pega aquí un titular o un párrafo de noticia"></textarea>' +
@@ -5574,12 +5811,12 @@ function vistaAnalizar() {
       "</div>" +
     "</div>" +
     '<div id="salida"></div>' +
-    '<p class="nota-al-pie">La herramienta compara el texto contra una lista fija de palabras. No comprende lo que lee. Que no aparezcan marcas no significa que el titular sea neutral, y una palabra marcada puede estar justificada según el hecho. El texto que escribes no se guarda ni se envía a ningún lado.</p>' +
+    '<p class="nota-al-pie">La herramienta usa un diccionario y reglas de construcción; no comprende lo que lee. Que no aparezcan marcas no significa que el texto sea neutral, y una palabra marcada puede estar justificada según el hecho. Las palabras con fondo gris están dentro de una cita: son de la fuente, no del medio. El texto que escribes no se guarda ni se envía a ningún lado.</p>' +
   "</div>";
 
   document.getElementById("ejemplo").addEventListener("click", function () {
     document.getElementById("entrada").value =
-      "Fuentes cercanas al operativo confirmaron que la turba generó un caos total antes de que la situación quedara controlada. Los mercados se desploman y crecen las dudas sobre el polémico plan del Gobierno, que apenas logró un leve repunte.";
+      "Fuentes cercanas al operativo confirmaron que la turba generó un caos total antes de que la situación quedara controlada. Se registraron enfrentamientos y varios manifestantes fueron detenidos. “Son unos pocos vándalos que no representan a nadie”, dijo el ministro, mientras los mercados se desploman y crecen las dudas sobre el polémico plan del Gobierno.";
   });
 
   document.getElementById("analizar").addEventListener("click", function () {
@@ -5591,85 +5828,77 @@ function vistaAnalizar() {
       return;
     }
 
-    /* Se normaliza letra por letra (sin tildes, minúsculas) para que
-       cada posición del texto normalizado coincida con la del original. */
-    let norm = "";
-    for (let k = 0; k < texto.length; k++) {
-      const n = sinTildes(texto[k]);
-      norm += n.length === 1 ? n : texto[k].toLowerCase().charAt(0);
-    }
-
-    /* Cada entrada del diccionario se convierte en una expresión que
-       solo marca palabras completas. Un asterisco final acepta
-       cualquier terminación (desplom* → desplomó, desplome, desploman). */
-    const candidatos = [];
-    Object.keys(DICCIONARIO).forEach(function (cat) {
-      DICCIONARIO[cat].forEach(function (entrada) {
-        const base = sinTildes(entrada).trim();
-        if (!base) return;
-        const cuerpo = base
-          .replace(/[.+^${}()|[\]\\]/g, "\\$&")
-          .replace(/\*/g, "[a-z0-9]*")
-          .replace(/\s+/g, "\\s+");
-        const patron = new RegExp("(^|[^a-z0-9])(" + cuerpo + ")(?![a-z0-9])", "g");
-        let m;
-        while ((m = patron.exec(norm)) !== null) {
-          const inicio = m.index + m[1].length;
-          candidatos.push({ inicio: inicio, fin: inicio + m[2].length, categoria: cat, entrada: entrada });
-          patron.lastIndex = inicio + 1;
-        }
-      });
-    });
-
-    /* Si dos entradas se superponen gana la más larga (la frase sobre
-       la palabra suelta) y, a igual largo, la que aparece antes. */
-    candidatos.sort(function (x, y) { return (y.fin - y.inicio) - (x.fin - x.inicio) || x.inicio - y.inicio; });
-    const ocupado = new Array(texto.length).fill(false);
-    const encontradas = [];
-    candidatos.forEach(function (c) {
-      for (let k = c.inicio; k < c.fin; k++) if (ocupado[k]) return;
-      for (let k = c.inicio; k < c.fin; k++) ocupado[k] = true;
-      encontradas.push({ inicio: c.inicio, fin: c.fin, literal: texto.slice(c.inicio, c.fin), categoria: c.categoria });
-    });
-    encontradas.sort(function (x, y) { return x.inicio - y.inicio; });
+    const r = analizarTexto(texto);
+    const marcas = r.marcas;
 
     let html = "", cursor = 0;
-    encontradas.forEach(function (g) {
+    marcas.forEach(function (g) {
+      const titulo = CATEGORIAS[g.categoria].nombre + ": " + g.motivo + (g.enCita ? " (Dentro de una cita: es palabra de la fuente, no del medio.)" : "");
       html += esc(texto.slice(cursor, g.inicio)) +
-        '<mark class="marca ' + g.categoria + '" data-trazo="' + esc(CATEGORIAS[g.categoria].trazo) +
-        '" title="' + esc(CATEGORIAS[g.categoria].nombre + ": " + CATEGORIAS[g.categoria].definicion) + '">' +
-        esc(g.literal) + "</mark>";
+        '<mark class="marca ' + g.categoria + (g.enCita ? " en-cita" : "") + '" data-trazo="' + esc(CATEGORIAS[g.categoria].trazo) +
+        '" title="' + esc(titulo) + '">' + esc(g.literal) + "</mark>";
       cursor = g.fin;
     });
-    html += esc(texto.slice(cursor));
+    html += esc(texto.slice(cursor)).replace(/\n/g, "<br>");
 
     const cuenta = {};
-    encontradas.forEach(function (g) { cuenta[g.categoria] = (cuenta[g.categoria] || 0) + 1; });
+    marcas.forEach(function (g) { cuenta[g.categoria] = (cuenta[g.categoria] || 0) + 1; });
+    const enCita = marcas.filter(function (g) { return g.enCita; }).length;
+    const delMedio = marcas.length - enCita;
 
-    const resumen = encontradas.length
-      ? Object.keys(cuenta).map(function (k) { return CATEGORIAS[k].nombre + ": " + cuenta[k]; }).join(" · ")
-      : "No se encontraron palabras del diccionario en este texto.";
+    const resumen = marcas.length
+      ? Object.keys(cuenta).map(function (k) { return CATEGORIAS[k].nombre + ": " + cuenta[k]; }).join(" · ") +
+        " — " + delMedio + " en la voz del medio, " + enCita + " dentro de citas"
+      : "No se encontraron marcas en este texto.";
 
     const leyenda = Object.keys(CATEGORIAS).map(function (k) {
       return '<span class="lg" data-trazo="' + CATEGORIAS[k].trazo + '" style="color:var(--' + k + ')">' + esc(CATEGORIAS[k].nombre) + "</span>";
-    }).join("");
+    }).join("") + '<span class="lg" style="background:rgba(0,0,0,.07);border-radius:3px;padding:0 4px">Dentro de una cita</span>';
 
-    const detalle = encontradas.length ? Object.keys(CATEGORIAS).filter(function (k) { return cuenta[k]; }).map(function (k) {
-      const vistas = [];
-      encontradas.forEach(function (g) {
-        const p = g.literal.toLowerCase();
-        if (g.categoria === k && vistas.indexOf(p) === -1) vistas.push(p);
+    const detalle = marcas.length ? Object.keys(CATEGORIAS).filter(function (k) { return cuenta[k]; }).map(function (k) {
+      const medio = [], cita = [];
+      marcas.forEach(function (g) {
+        if (g.categoria !== k) return;
+        const p = g.literal.toLowerCase().replace(/\s+/g, " ");
+        const lista = g.enCita ? cita : medio;
+        if (lista.indexOf(p) === -1) lista.push(p);
       });
       return '<p class="meta" style="margin-top:10px"><strong style="color:var(--' + k + ')">' + esc(CATEGORIAS[k].nombre) +
-        "</strong> — " + esc(CATEGORIAS[k].definicion) + "<br>" + esc(vistas.join(", ")) + "</p>";
+        "</strong> — " + esc(CATEGORIAS[k].definicion) +
+        (medio.length ? "<br>Del medio: " + esc(medio.join(", ")) : "") +
+        (cita.length ? "<br>En citas: " + esc(cita.join(", ")) : "") + "</p>";
     }).join("") : "";
+
+    const v = r.revision;
+    function fila(estado, titulo, texto) {
+      const icono = estado === "ok" ? "✓" : estado === "no" ? "✗" : "!";
+      return '<li><span class="revision-' + estado + '">' + icono + "</span> <strong>" + esc(titulo) + "</strong> " + esc(texto) + "</li>";
+    }
+    const filas = [
+      v.atribuciones === 0
+        ? fila("no", "Fuentes:", "no hay verbos de atribución («dijo», «según»…). Las afirmaciones no tienen quién las respalde.")
+        : fila(v.atribuciones >= 2 ? "ok" : "med", "Fuentes:", v.atribuciones + " atribuciones encontradas."),
+      v.citas === 0
+        ? fila("med", "Citas directas:", "ninguna. Se informa sin dejar hablar a los protagonistas.")
+        : fila(v.citas >= 2 ? "ok" : "med", "Citas directas:", v.citas + (v.citas === 1 ? " cita. Con una sola voz no hay contraparte." : " citas. Revisa si hablan las dos partes.")),
+      fila(v.actores >= 3 ? "ok" : v.actores >= 1 ? "med" : "no", "Actores nombrados:", v.actores + " personas o instituciones identificadas."),
+      v.cifras === 0
+        ? fila("med", "Cifras:", "el texto no trae datos numéricos.")
+        : fila(v.cifrasConFuente > 0 ? "ok" : "no", "Cifras:", v.cifras + " datos numéricos; " +
+            (v.cifrasConFuente > 0 ? v.cifrasConFuente + " de " + v.oracionesConCifras + " oraciones con cifras indican de dónde salen." : "no se indica de dónde salen.")),
+      fila(delMedio === 0 ? "ok" : delMedio <= 2 ? "med" : "no", "Lenguaje del medio:",
+        delMedio === 0 ? "sin marcas fuera de las citas." : delMedio + (delMedio === 1 ? " marca" : " marcas") + " en la voz del propio medio, fuera de las citas.")
+    ];
+    if (v.palabras < 25) filas.push(fila("med", "Texto corto:", "con pocas palabras la revisión de omisiones es poco fiable; sirve más para titulares."));
 
     salida.innerHTML =
       '<div class="resultado-analisis">' +
         '<div class="leyenda" style="margin-bottom:20px">' + leyenda + "</div>" +
         '<p class="texto-analizado">' + html + "</p>" +
-        '<p class="meta">' + resumen + "</p>" +
+        '<p class="meta">' + esc(resumen) + "</p>" +
         detalle +
+        '<p class="analisis-titulo">Revisión de omisiones</p>' +
+        '<ul class="revision-lista">' + filas.join("") + "</ul>" +
       "</div>";
   });
 }
