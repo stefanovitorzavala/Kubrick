@@ -3,8 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kubrick · Análisis mediático comparado</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231D1D1F'/%3E%3Ctext x='32' y='42' font-family='-apple-system,Helvetica,Arial,sans-serif' font-size='26' font-weight='700' fill='white' text-anchor='middle'%3EKN%3C/text%3E%3C/svg%3E">
+<title>Kubrick News · Análisis mediático comparado</title>
+<link rel="icon" type="image/png" sizes="32x32" href="kn/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="kn/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="kn/icono-192.png">
+<link rel="apple-touch-icon" href="kn/apple-touch-icon.png">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="description" content="Herramienta que compara cómo distintos medios cubren un mismo hecho, basada en la teoría de la construcción social de la realidad.">
 <meta name="theme-color" content="#ffffff">
 <style>
@@ -1834,6 +1838,11 @@ code {
 .chip-filtro.activo .chip-n { opacity: .85; }
 
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@500&family=EB+Garamond:ital@0;1&family=Libre+Franklin:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kn/kn-tema.css?v=1">
+<link rel="stylesheet" href="kn/kn-lienzo.css?v=1">
 </head>
 <body>
 
@@ -3512,6 +3521,35 @@ function guardarEstadoRemoto() {
   }, 400);
 }
 
+/* Cuadro propio para pedir la clave (en vez de prompt(), que algunos
+   navegadores bloquean y que no sigue el diseño del sitio).
+   Devuelve la clave escrita, o null si se cancela. */
+function pedirClave() {
+  return new Promise(function (resolver) {
+    const capa = document.createElement("div");
+    capa.className = "acceso-capa";
+    capa.innerHTML =
+      '<form class="acceso-caja" autocomplete="off">' +
+        '<h3>Modo administrador</h3>' +
+        '<p>Escribe la clave para editar la portada.</p>' +
+        '<input type="password" class="acceso-clave" placeholder="Clave" aria-label="Clave de administrador" autocomplete="current-password">' +
+        '<div class="acceso-botones">' +
+          '<button type="button" class="boton secundario acceso-cancelar">Cancelar</button>' +
+          '<button type="submit" class="boton">Entrar</button>' +
+        "</div>" +
+      "</form>";
+    document.body.appendChild(capa);
+    const campo = capa.querySelector(".acceso-clave");
+    setTimeout(function () { campo.focus(); }, 30);
+    function cerrar(valor) { capa.remove(); document.removeEventListener("keydown", alEsc); resolver(valor); }
+    function alEsc(e) { if (e.key === "Escape") cerrar(null); }
+    document.addEventListener("keydown", alEsc);
+    capa.querySelector("form").addEventListener("submit", function (e) { e.preventDefault(); cerrar(campo.value); });
+    capa.querySelector(".acceso-cancelar").addEventListener("click", function () { cerrar(null); });
+    capa.addEventListener("pointerdown", function (e) { if (e.target === capa) cerrar(null); });
+  });
+}
+
 /* Verifica la clave contra el servidor antes de activar el modo
    admin, en vez de compararla en el propio navegador. */
 async function alternarAdmin() {
@@ -3524,7 +3562,7 @@ async function alternarAdmin() {
     return;
   }
 
-  const clave = prompt("Clave de administrador:");
+  const clave = await pedirClave();
   if (clave === null) return;
 
   const boton = document.getElementById("boton-admin");
@@ -4377,9 +4415,9 @@ function barraLCD(caso) {
   const d = calcularDistribucion(caso);
   if (!d) return "";
   return '<div class="barra-lcd">' +
-    (d.izq ? '<span class="seg-izq" style="flex:' + d.izq + '"></span>' : "") +
-    (d.cen ? '<span class="seg-cen" style="flex:' + d.cen + '"></span>' : "") +
-    (d.der ? '<span class="seg-der" style="flex:' + d.der + '"></span>' : "") +
+    (d.izq ? '<span class="seg-izq" style="flex:' + d.izq + '"><b>Izquierda ' + d.izq + '%</b><i>I ' + d.izq + '%</i></span>' : "") +
+    (d.cen ? '<span class="seg-cen" style="flex:' + d.cen + '"><b>Centro ' + d.cen + '%</b><i>C ' + d.cen + '%</i></span>' : "") +
+    (d.der ? '<span class="seg-der" style="flex:' + d.der + '"><b>Derecha ' + d.der + '%</b><i>D ' + d.der + '%</i></span>' : "") +
   "</div>";
 }
 
@@ -4460,7 +4498,7 @@ function tarjetaGrande(c, item, seccionId) {
     '<div class="velo-grande"></div>' +
     '<div class="texto-grande">' +
       "<h2>" + esc(c.titulo) + "</h2>" +
-      "<p>" + esc(c.coberturas.length) + " medios comparados &middot; " + esc(fecha(c.fecha)) + "</p>" +
+      "<p>" + esc(c.coberturas.length) + " medios comparados</p>" +
       barraLCD(c) +
     "</div>" +
     manijaTarjeta(seccionId, c.id) +
@@ -4479,7 +4517,7 @@ function tarjetaMediana(c, item, seccionId) {
       : '<div class="miniatura-mediana miniatura-vacia"></div>') +
     '<div class="texto-mediana">' +
       "<h3>" + esc(c.titulo) + "</h3>" +
-      "<p>" + esc(c.coberturas.length) + " medios &middot; " + esc(fecha(c.fecha)) + "</p>" +
+      "<p>" + esc(c.coberturas.length) + " medios</p>" +
       barraLCD(c) +
     "</div>" +
     manijaTarjeta(seccionId, c.id) +
@@ -5090,7 +5128,7 @@ function vistaCaso(id) {
         '<div class="cabecera-caso aparece">' +
           "<h1>" + esc(caso.titulo) + "</h1>" +
           chipsTemas(caso) +
-          '<p class="meta">' + fecha(caso.fecha) + " &middot; " + caso.coberturas.length + " medios comparados</p>" +
+          '<p class="meta">' + caso.coberturas.length + " medios comparados</p>" +
           '<p class="hechos">' + esc(caso.hechos) + "</p>" +
         "</div>" +
         '<div class="pestanas" role="tablist">' +
@@ -5202,9 +5240,9 @@ function graficoEje(caso) {
 
     /* barra L / C / R */
     html += '<div class="dist-barra">' +
-      segBarra("L", gIzq, pct(gIzq), "izq") +
+      segBarra("I", gIzq, pct(gIzq), "izq") +
       segBarra("C", gCen, pct(gCen), "cen") +
-      segBarra("R", gDer, pct(gDer), "der") +
+      segBarra("D", gDer, pct(gDer), "der") +
     "</div>";
 
     /* una columna por posición */
@@ -6081,11 +6119,17 @@ function pintarBarraTemas() {
 
 window.addEventListener("hashchange", enrutar);
 
+/* Barra superior: se vuelve una franja delgada al bajar. */
+window.addEventListener("scroll", function () {
+  document.body.classList.toggle("bajando", window.scrollY > 40);
+}, { passive: true });
+
 /* Espera a tener el estado compartido (secciones, ediciones, etc.)
    antes de dibujar la primera vista, para no mostrar la portada vacía
    un instante y luego "saltar" al contenido real. */
 cargarEstadoRemoto().then(enrutar);
 
 </script>
+<script src="kn/kn-lienzo.js?v=1"></script>
 </body>
 </html>

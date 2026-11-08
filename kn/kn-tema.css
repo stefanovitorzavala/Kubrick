@@ -1,0 +1,370 @@
+/* ==================================================================
+   KUBRICK NEWS · TEMA EDITORIAL
+   Capa visual. Solo cambia la apariencia; no toca estructura ni datos.
+   ================================================================== */
+
+:root {
+  --papel: #FFFFFF;
+  --papel-2: #F5F5F3;
+  --tinta: #111111;
+  --gris: #555555;
+  --gris-medio: #777777;
+  --gris-claro: #9A9A9A;
+  --linea: #DCDCDC;
+  --linea-suave: #EDEDED;
+  --acento: #111111;
+  --acento-oscuro: #000000;
+  --acento-suave: #F2F2F0;
+
+  --serif: "Cormorant Garamond", Garamond, "Times New Roman", serif;
+  --ui: "EB Garamond", Garamond, Georgia, serif;
+  --versal: "Cormorant SC", "Cormorant Garamond", serif;
+
+  --r-s: 0px;
+  --r-m: 0px;
+  --r-l: 0px;
+}
+
+body { font-size: 18px; letter-spacing: 0; color: var(--gris); }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; letter-spacing: -.005em; }
+a { color: var(--tinta); }
+a:hover { text-decoration: none; opacity: .72; }
+:focus-visible { outline: 1px solid var(--tinta); border-radius: 0; }
+
+/* ---------- Barra fija: logo centrado, menú en versalitas ---------- */
+.barra {
+  background: #fff;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color .35s ease;
+}
+.barra .contenedor {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+  padding-top: 34px;
+  padding-bottom: 6px;
+  position: relative;
+  transition: padding .35s ease;
+}
+a.marca { margin: 0 auto; }
+a.marca:hover { opacity: 1; }
+a.marca .marca-nombre, a.marca .marca-sub { display: none; }
+a.marca::before {
+  content: "";
+  display: block;
+  width: 420px; max-width: 80vw; height: 120px;
+  background: url("kn-isologo.png") center / contain no-repeat;
+  transition: width .35s ease, height .35s ease;
+}
+.barra nav { justify-content: center; gap: 4px 40px; margin-top: 18px; transition: margin .35s ease; }
+.barra nav a,
+.barra nav a.activo {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: 0;
+  line-height: 1;
+  color: #777;
+  transition: font-size .35s ease, color .2s;
+  background: none;
+  padding: 6px 0;
+  border-radius: 0;
+}
+.barra nav a:hover { background: none; color: var(--tinta); opacity: 1; }
+.barra nav a.activo { color: var(--tinta); }
+
+.boton-admin {
+  position: absolute; right: 32px; top: 18px;
+  font-family: var(--versal); font-size: 12px; letter-spacing: .2em; text-transform: lowercase;
+  background: none; border: 0; color: var(--gris-claro); padding: 4px 0; border-radius: 0;
+}
+.boton-admin:hover { background: none; color: var(--tinta); }
+.boton-admin.activo { background: none; color: var(--tinta); border: 0; text-decoration: underline; }
+
+/* temas: texto simple bajo un filete suave, sin píldoras */
+.barra-temas-interior { gap: 4px 22px; padding: 14px 0 14px; transition: padding .35s ease; }
+.chip-filtro,
+.chip-filtro.activo {
+  font-family: var(--ui);
+  font-style: normal;
+  font-size: 15.5px;
+  font-weight: 400;
+  padding: 0 0 1px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: #888;
+}
+.chip-filtro:hover { color: var(--tinta); }
+.chip-filtro:active { transform: none; }
+.chip-filtro.activo { color: var(--tinta); border-bottom-color: var(--tinta); }
+.chip-n { display: none; }
+
+/* al bajar: la barra se vuelve una franja delgada */
+body.bajando .barra { border-bottom-color: var(--linea-suave); }
+body.bajando .barra .contenedor { padding-top: 10px; padding-bottom: 0; }
+body.bajando a.marca { position: absolute; left: 32px; top: 50%; transform: translateY(-50%); }
+body.bajando a.marca::before { width: 104px; height: 54px; background-image: url("kn-the.png"); }
+body.bajando .barra .contenedor { padding-top: 14px; }
+body.bajando .barra nav { margin-top: 4px; }
+body.bajando .barra nav a { font-size: 17px; }
+body.bajando .barra .barra-temas-interior { padding-top: 8px; padding-bottom: 8px; }
+body.bajando .boton-admin { top: 8px; }
+
+/* ---------- Portada ---------- */
+.cabecera-seccion-noticias { justify-content: space-between; margin: 34px 0 18px; padding-bottom: 12px; border-bottom: 1px solid var(--tinta); }
+.cabecera-seccion-noticias h2 {
+  font-family: var(--serif) !important;
+  font-weight: 500;
+  font-size: 32px !important;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--tinta);
+}
+.seccion-noticias { gap: 14px; }
+
+.tarjeta-grande { border-radius: 0; background: #111; }
+.fondo-grande { opacity: 1; }
+.velo-grande { background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.82) 100%); }
+.texto-grande { padding: 34px 38px; }
+.texto-grande h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 2.7vw, 2.4rem);
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+.texto-grande p {
+  font-family: var(--ui);
+  font-size: 16px;
+  color: rgba(255,255,255,.85);
+}
+.barra-lcd { height: 2px; border-radius: 0; }
+.texto-grande .barra-lcd { max-width: 140px; background: rgba(255,255,255,.25); }
+
+.tarjeta-mediana { background: none; border-radius: 0; padding: 0; gap: 16px; }
+.tarjeta-mediana:hover { transform: none; opacity: .8; }
+.texto-mediana h3 { font-size: 1.2rem; font-weight: 500; line-height: 1.2; }
+.texto-mediana p, .tarjeta-pequena p { font-family: var(--ui); font-size: 14.5px; }
+
+.tarjeta-pequena { border-bottom: 0; padding: 8px 0; }
+.titulo-pequeno { font-family: var(--serif); font-size: 1.05rem; font-weight: 500; }
+.tarjeta-pequena:hover .titulo-pequeno { text-decoration: none; }
+
+/* sin líneas verticales entre secciones */
+.bloque-seccion.con-linea::before, .bloque-seccion::before { background: transparent; }
+
+/* ---------- Generales ---------- */
+.tema { font-family: var(--versal); font-weight: 500; letter-spacing: .16em; text-transform: lowercase; border-radius: 0; }
+.tema-alcance { background: none; color: var(--tinta); border: 1px solid var(--tinta); }
+.tema-asunto { border-color: var(--linea); }
+.tema-mas { background: none; }
+.boton { border-radius: 0; }
+.pie { text-align: center; border-top: 0; color: var(--gris-claro); }
+.pie .contenedor::before {
+  content: ""; display: block; width: 48px; height: 44px; margin: 0 auto 22px;
+  background: url("kn-isotipo.png") center / contain no-repeat; opacity: .85;
+}
+.pie p { margin-left: auto; margin-right: auto; }
+
+/* fila de temas en horizontal */
+.barra .barra-temas-interior {
+  flex-direction: row; justify-content: center; gap: 4px 22px;
+  max-width: 760px; margin-top: 16px; border-top: 1px solid var(--linea-suave);
+}
+/* título "Noticias" de la portada: el logo ya nombra la página */
+.cabecera-noticias h1 { display: none; }
+.seccion { padding-top: 24px; }
+
+/* el titular se adapta al ancho de cada tarjeta, no al de la pantalla */
+.tarjeta-grande { container-type: inline-size; }
+.texto-grande h2 { font-size: clamp(1.5rem, 7cqi, 2.4rem); }
+@container (max-width: 460px) { .texto-grande { padding: 24px 24px; } }
+
+.boton-admin, .boton-admin.activo { font-family: var(--ui); font-size: 14px; letter-spacing: 0; text-transform: none; }
+
+
+/* ---------- Etiquetas de tema: texto, sin recuadros ---------- */
+.temas { gap: 0; margin: 4px 0 14px; }
+.tema, .tema-alcance, .tema-asunto, .tema-mas {
+  font-family: var(--ui); font-style: italic; font-weight: 400; font-size: 17px;
+  letter-spacing: 0; text-transform: none;
+  padding: 0; border: 0; border-radius: 0; background: none; color: var(--gris);
+}
+.tema + .tema::before { content: "·"; font-style: normal; margin: 0 10px; color: var(--gris-claro); }
+.meta { font-family: var(--ui); font-size: 15px; color: var(--gris-claro); }
+
+
+
+
+/* ==================================================================
+   PALETA: blanco, negro, azul Apple, gris Apple. Nada más.
+   ================================================================== */
+:root {
+  --negro: #1D1D1F;
+  --azul: #24477F;
+  --gris-apple: #86868B;
+  --gris-fondo: #F5F5F7;
+  --tinta: #1D1D1F;
+  --acento: #24477F;
+  --acento-oscuro: #1A355F;
+  --acento-suave: #E9EEF6;
+  --papel-2: #F5F5F7;
+  --linea: #D2D2D7;
+  --linea-suave: #E8E8ED;
+  --gris: #424245;
+  --gris-medio: #6E6E73;
+  --gris-claro: #86868B;
+  /* colores de datos: tonos apagados que conviven con el negro y el azul Apple */
+  --rojo: #C2403A;
+  --azul-datos: #24477F;
+  --ocre: #B07D1E;
+  --salvia: #2E8A64;
+  --indigo: #6359B8;
+  /* léxico */
+  --valorativa: #B07D1E;
+  --emotiva: #C2403A;
+  --atenuante: #2E8A64;
+  --atribucion-vaga: #6359B8;
+  /* omisión */
+  --omi-si: #2E8A64;
+  --omi-parcial: #B07D1E;
+  --omi-no: #C2403A;
+  --rojo-izq: #C2403A;
+  --azul-der: #24477F;
+}
+
+/* ---------- Barra de arriba: vidrio líquido ---------- */
+.barra {
+  background: rgba(255,255,255,.68);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border-bottom: 1px solid rgba(255,255,255,.7);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 0 rgba(0,0,0,.04);
+}
+body.bajando .barra {
+  background: rgba(255,255,255,.58);
+  border-bottom-color: rgba(0,0,0,.06);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 30px rgba(0,0,0,.08);
+}
+a.marca::before { mix-blend-mode: multiply; }   /* el blanco del logo se funde con el vidrio */
+.barra .barra-temas-interior { border-top-color: rgba(0,0,0,.07); }
+.chip-filtro.activo { border-bottom-color: var(--azul); color: var(--negro); }
+.barra nav a.activo { color: var(--negro); }
+
+/* ---------- Barra izquierda / centro / derecha (tarjetas) ---------- */
+.barra-lcd {
+  display: flex; gap: 2px; height: 22px; margin-top: 12px;
+  border-radius: 8px; overflow: hidden; background: none;
+}
+.texto-grande .barra-lcd, .texto-mediana .barra-lcd, .tarjeta-pequena .barra-lcd { max-width: 420px; background: none; }
+.barra-lcd span { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; container-type: inline-size; }
+.barra-lcd b, .barra-lcd i {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Libre Franklin", Arial, sans-serif;
+  font-style: normal; font-weight: 600; font-size: 12px; letter-spacing: 0; white-space: nowrap; padding: 0 6px;
+}
+.barra-lcd span.seg-izq { background: var(--rojo); color: #fff; }
+.barra-lcd span.seg-cen { background: #FFFFFF; color: var(--negro); box-shadow: inset 0 0 0 1px #D2D2D7; }
+.barra-lcd span.seg-der { background: var(--azul); color: #fff; }
+.texto-grande .barra-lcd span.seg-cen { background: rgba(255,255,255,.95); box-shadow: none; }
+.tarjeta-mediana .barra-lcd, .tarjeta-pequena .barra-lcd { height: 16px; border-radius: 6px; margin-top: 8px; }
+.tarjeta-mediana .barra-lcd b, .tarjeta-pequena .barra-lcd b, .tarjeta-mediana .barra-lcd i, .tarjeta-pequena .barra-lcd i { font-size: 10px; }
+
+/* ---------- Distribución editorial (panel del caso) ---------- */
+.dist-barra { gap: 2px; border-radius: 8px; overflow: hidden; }
+.dist-barra .seg { border-radius: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+.dist-barra .seg.seg-izq { background: var(--rojo); color: #fff; }
+.dist-barra .seg.seg-cen { background: #FFFFFF; color: var(--negro); box-shadow: inset 0 0 0 1px #D2D2D7; }
+.dist-barra .seg.seg-der { background: var(--azul); color: #fff; }
+.dist-col { border-radius: 12px; }
+.col-izquierda        { --col-bg: rgba(194,64,58,.10); --col-ring: #C2403A; }
+.col-centro-izquierda { --col-bg: rgba(194,64,58,.05); --col-ring: #D9837E; }
+.col-centro           { --col-bg: #F5F5F7;              --col-ring: #86868B; }
+.col-centro-derecha   { --col-bg: rgba(36,71,127,.06); --col-ring: #6F8BB8; }
+.col-derecha          { --col-bg: rgba(36,71,127,.12); --col-ring: #24477F; }
+
+/* los logos ya vienen con fondo transparente: no hace falta fundir */
+a.marca::before { mix-blend-mode: normal; }
+body.bajando a.marca::before { width: 92px; height: 48px; }
+/* margen lateral del contenido (antes .seccion lo anulaba en pantallas medianas) */
+.contenedor.seccion { padding-left: 32px; padding-right: 32px; }
+@media (max-width: 720px) { .contenedor.seccion { padding-left: 20px; padding-right: 20px; } }
+
+/* omisión: presente / parcial / ausente con su propio juego de colores */
+.v-si .glifo { color: var(--omi-si); }
+.v-parcial .glifo { color: var(--omi-parcial); }
+.v-no .glifo { color: var(--omi-no); }
+.relleno { background: var(--azul); }
+
+/* ---------- Botones: ligeramente redondeados, estilo Apple ---------- */
+.boton {
+  font-family: var(--ui); font-size: 16px; font-weight: 400; letter-spacing: 0;
+  padding: 9px 20px; border: 0; border-radius: 12px;
+  background: var(--azul); color: #fff;
+  transition: background .2s ease, transform .15s ease;
+}
+.boton:hover { background: var(--acento-oscuro); opacity: 1; }
+.boton:active { transform: scale(.97); }
+.boton.secundario { background: #F0F0F2; color: var(--negro); border: 0; }
+.boton.secundario:hover { background: #E6E6EA; color: var(--negro); }
+.boton-admin, .boton-admin.activo { border-radius: 10px; padding: 4px 10px; }
+.boton-admin.activo { background: #F0F0F2; text-decoration: none; }
+
+/* esquinas: suaves y discretas en todo el sitio */
+:root { --r-s: 8px; --r-m: 12px; --r-l: 14px; }
+.tarjeta-grande { border-radius: 14px; }
+.miniatura-mediana, .miniatura-pequena { border-radius: 8px; }
+
+/* cada segmento muestra el nombre completo si cabe; si no, la inicial; si es mínimo, nada */
+.barra-lcd i { display: none; }
+@container (max-width: 96px) { .barra-lcd b { display: none; } .barra-lcd i { display: block; } }
+@container (max-width: 30px) { .barra-lcd i { display: none; } }
+/* una tarjeta nunca es más ancha que la pantalla */
+.tarjeta-grande, .tarjeta-mediana, .tarjeta-pequena { max-width: 100%; }
+
+/* ---------- Barra en celular: logo arriba, menú y temas deslizables ---------- */
+@media (max-width: 720px) {
+  .barra .contenedor { padding-top: 18px; padding-left: 0; padding-right: 0; }
+  a.marca::before { width: 250px; height: 70px; }
+  body.bajando a.marca { position: static; transform: none; }
+  body.bajando a.marca::before { width: 150px; height: 40px; background-image: url("kn-isologo.png"); }
+  body.bajando .barra .contenedor { padding-top: 8px; }
+  .barra nav, .barra .barra-temas-interior {
+    flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; max-width: 100%;
+    padding-left: 20px; padding-right: 20px; scrollbar-width: none;
+  }
+  .barra nav::-webkit-scrollbar, .barra .barra-temas-interior::-webkit-scrollbar { display: none; }
+  .barra nav { gap: 22px; margin-top: 10px; }
+  .barra nav a, .barra nav a.activo { font-size: 18px; white-space: nowrap; }
+  body.bajando .barra nav a { font-size: 16px; }
+  .chip-filtro { white-space: nowrap; flex: none; }
+  .barra .barra-temas-interior { margin-top: 8px; padding-top: 10px; padding-bottom: 10px; }
+  .boton-admin, body.bajando .boton-admin { top: 6px; right: 12px; }
+}
+/* portada por secciones: nada más ancho que la pantalla */
+.rejilla-portada, .bloque-seccion, .seccion-noticias { min-width: 0; max-width: 100%; }
+@media (max-width: 720px) { .tarjeta-grande { width: 100% !important; } }
+
+/* ---------- Cuadro de acceso al modo admin ---------- */
+.acceso-capa {
+  position: fixed; inset: 0; z-index: 200; display: grid; place-items: center;
+  background: rgba(29,29,31,.28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: acceso-entra .2s ease both;
+}
+.acceso-caja {
+  width: min(360px, calc(100vw - 32px)); padding: 26px 24px 20px; border-radius: 18px;
+  background: rgba(255,255,255,.9); -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%);
+  box-shadow: 0 20px 60px rgba(0,0,0,.22); text-align: center;
+}
+.acceso-caja h3 { font: 500 26px/1.1 var(--serif); margin: 0 0 6px; color: var(--negro); }
+.acceso-caja p { font: 15px/1.4 var(--ui); color: var(--gris-medio); margin: 0 auto 16px; }
+.acceso-clave {
+  width: 100%; box-sizing: border-box; font: 16px var(--ui); padding: 10px 12px;
+  border: 1px solid var(--linea); border-radius: 10px; outline: none; background: #fff;
+}
+.acceso-clave:focus { border-color: var(--azul); box-shadow: 0 0 0 3px rgba(36,71,127,.14); }
+.acceso-botones { display: flex; gap: 8px; margin-top: 16px; }
+.acceso-botones .boton { flex: 1; }
+@keyframes acceso-entra { from { opacity: 0; } to { opacity: 1; } }
