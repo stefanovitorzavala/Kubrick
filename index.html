@@ -6119,10 +6119,22 @@ function pintarBarraTemas() {
 
 window.addEventListener("hashchange", enrutar);
 
-/* Barra superior: se vuelve una franja delgada al bajar. */
-window.addEventListener("scroll", function () {
-  document.body.classList.toggle("bajando", window.scrollY > 40);
-}, { passive: true });
+/* Barra superior: se vuelve una franja delgada al bajar.
+   Usa dos límites distintos (histéresis): se achica al pasar de 160 px
+   y solo vuelve a crecer al llegar arriba del todo. Con un único límite,
+   el cambio de alto de la barra movía la página y la dejaba rebotando
+   entre los dos estados. */
+(function () {
+  let achicada = false;
+  function revisar() {
+    const y = window.scrollY;
+    if (!achicada && y > 160) achicada = true;
+    else if (achicada && y < 8) achicada = false;
+    document.body.classList.toggle("bajando", achicada);
+  }
+  window.addEventListener("scroll", revisar, { passive: true });
+  revisar();
+})();
 
 /* Espera a tener el estado compartido (secciones, ediciones, etc.)
    antes de dibujar la primera vista, para no mostrar la portada vacía
